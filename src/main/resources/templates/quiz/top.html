@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>クイズトップページ</title>
+	<link rel="stylesheet" th:href="@{/style.css}">
+</head>
+
+<body>
+	<div class="container">
+		<h1>クイズトップページ</h1>
+
+		<div class="question-cards">
+			<h1>Quiz Learning</h1>
+			
+			<p class="sub-title">学習したいカテゴリを選択してください</p>
+			
+			<button type="button" onclick="location.href='/quiz/aws/list'">
+				AWSクイズ
+			</button>
+		</div> <br> <br>
+
+		<div>
+			<button disabled>
+				<!--		onclick="location.href='/quiz/COBOL/list'-->
+				COBOLクイズ（準備中）
+			</button>
+		</div> <br> <br>
+
+		<div>
+			<button disabled>
+				<!--			onclick="location.href='/quiz/Java/list'-->
+				Javaクイズ（準備中）
+			</button>
+		</div>
+	</div>
+	<p class="version">
+	    Ver1.0
+	</p>
+</body>
+
+</html>

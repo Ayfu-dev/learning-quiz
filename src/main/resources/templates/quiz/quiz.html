@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Quiz</title>
+	<link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="question-card">
+
+        <h2>第<span th:text="${questionIndex + 1}"></span>問</h2>
+
+        <p class="question-text"
+           th:text="${question.questionText}"></p>
+
+        <form th:action="@{/quiz/{category}/{setIndex}/{questionIndex}
+            (category=${category},setIndex=${setIndex},questionIndex=${questionIndex})}"
+            method="post">
+
+            <div class="choices">
+                <div class="choice"
+                     th:each="choice, idx : ${question.choices}">
+                    <label>
+                        <input type="radio" name="answer" th:value="${idx.index}" required>
+                        <span th:text="${choice}"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="button-area">
+                <button type="submit">
+                    回答する
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+
+</html>

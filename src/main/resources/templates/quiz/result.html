@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Result</title>
+	<link rel="stylesheet" th:href="@{/style.css}">
+</head>
+
+<body>
+	<div class="container">
+		<div class="question-card">
+			<h2>結果</h2>
+
+			<p class="score">
+				<span th:text="${score}"></span>/<span th:text="${total}"></span>問正解
+			</p>
+
+			<div class="button-area">
+				<button th:attr="data-url=@{'/quiz/' + ${category} + '/' + ${setIndex} + '/0'}"
+					onclick="location.href=this.dataset.url">
+					もう一度挑戦
+				</button><br><br>
+
+				<button th:attr="data-url=@{'/quiz/' + ${category} + '/list'}" onclick="location.href=this.dataset.url">
+					問題選択へ戻る
+				</button><br><br>
+
+				<button onclick="location.href='/quiz'">
+					カテゴリ選択へ戻る
+				</button>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

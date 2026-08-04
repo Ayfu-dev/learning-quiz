@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>回答結果</title>
+	<link rel="stylesheet" th:href="@{/style.css}">
+</head>
+
+<body>
+	<div class="container">
+		<div class="question-card">
+			<h2>解説</h2>
+			<p class="question-text" th:text="${question.questionText}"></p>
+			<hr>
+			<p>
+				あなたの回答：
+				<span th:text="${question.choices[userAnswer]}"></span>
+			</p>
+
+			<p th:if="${correct}" class="correct">
+				正解！
+			</p>
+
+			<p th:if="${!correct}" class="incorrect">
+				不正解
+			</p>
+			<hr>
+			<h3>解説</h3>
+
+			<p class="explanation" th:text="${question.explanation}">
+			</p>
+
+			<div th:with="nextUrl=@{/quiz/{c}/{s}/{q}(c=${category}, s=${setIndex}, q=${questionIndex + 1})}"
+				class="button-area">
+				<button th:attr="data-url=${nextUrl}" onclick="location.href=this.dataset.url">
+					次へ
+				</button>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>
