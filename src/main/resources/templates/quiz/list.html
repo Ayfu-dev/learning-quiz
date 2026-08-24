@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>クイズ一覧</title>
-	<link rel="stylesheet" th:href="@{/style.css}">
+	<link rel="stylesheet" th:href="@{/css/style.css}">
 
 </head>
 
@@ -47,30 +47,3 @@
 </body>
 
 </html>
-
-<!--<div class="container">-->
-<!--		<h1 th:text="'カテゴリ：' + ${category}"></h1>-->
-<!--		<div th:each="set, idx : ${quizSets}">-->
-<!--			<h2 th:text="${set.title}"></h2>-->
-<!--			<p>-->
-<!--				問題数：<span th:text="${set.questions.size()}"></span> 問-->
-<!--			</p>-->
-<!--			 第1問へ -->
-<!--			<button th:attr="data-url=@{'/quiz/' + ${category} + '/' + ${idx.index} + '/0'}"-->
-<!--				onclick="location.href=this.dataset.url">-->
-<!--				開始-->
-<!--			</button>-->
-<!--			<br><br>-->
-<!--			 問題一覧 -->
-<!--			<div>-->
-<!--				<span>問題一覧：</span>-->
-<!--				<span th:each="q, qIdx : ${set.questions}">-->
-<!--					<button th:attr="data-url=@{'/quiz/' + ${category} + '/' + ${idx.index} + '/' + ${qIdx.index}}"-->
-<!--						onclick="location.href=this.dataset.url">-->
-<!--						第<span th:text="${qIdx.index + 1}"></span>問-->
-<!--					</button>-->
-<!--				</span>-->
-<!--			</div>-->
-<!--			<hr>-->
-<!--		</div>-->
-<!--	</div>-->

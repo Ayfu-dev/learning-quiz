@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>問題編集</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+	<div class="container">
+
+		<form th:action="@{/quiz/admin/question/edit}" method="post" class="question-form">
+
+			<input type="hidden" name="id" th:value="${question.id}">
+
+			<div class="form-group">
+				<label>クイズセット</label>
+				<select name="quizSetId" required>
+					<option th:each="quizSet : ${quizSets}" th:value="${quizSet.id}" th:text="${quizSet.title}"
+						th:selected="${quizSet.id == question.quizSet.id}">
+					</option>
+				</select>
+			</div>
+
+			<div class="form-group">
+				<label>問題文</label>
+				<textarea name="questionText" class="question-text" required
+					th:text="${question.questionText}"></textarea>
+			</div>
+
+			<div class="form-group" th:each="choice, stat : ${question.choices}">
+
+				<label th:text="'選択肢' + ${stat.index + 1}"></label>
+
+				<input type="text" name="choiceText" th:value="${choice.choiceText}" required>
+			</div>
+
+			<div class="form-group">
+				<label>正解</label>
+
+				<select name="answerIndex" required>
+					<option value="0" th:selected="${question.answerIndex == 0}">
+						選択肢1
+					</option>
+
+					<option value="1" th:selected="${question.answerIndex == 1}">
+						選択肢2
+					</option>
+
+					<option value="2" th:selected="${question.answerIndex == 2}">
+						選択肢3
+					</option>
+
+					<option value="3" th:selected="${question.answerIndex == 3}">
+						選択肢4
+					</option>
+				</select>
+			</div>
+
+			<div class="form-group">
+				<label>解説</label>
+
+				<textarea name="explanation" class="explanation" th:text="${question.explanation}"></textarea>
+			</div>
+
+			<div class="form-actions">
+				<button type="submit">更新</button>
+			</div>
+
+			<br><br>
+
+			<div>
+				<a th:href="@{/quiz/admin/question}">
+					クイズ管理
+				</a>
+			</div>
+
+		</form>
+
+	</div>
+
+</body>
+
+</html>

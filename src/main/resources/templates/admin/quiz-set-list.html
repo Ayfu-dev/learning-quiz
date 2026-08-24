@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>クイズセット一覧</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+	<div class="container">
+
+		<h1>クイズセット一覧</h1>
+
+		<a th:href="@{/quiz/admin/quiz_set/add}" class="small-button">
+			クイズセットを追加
+		</a>
+
+		<a th:href="@{/quiz/admin}" class="small-button">
+			管理画面へ戻る
+		</a>
+
+		<table>
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>カテゴリ</th>
+					<th>タイトル</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr th:each="quizSet : ${quizSets}">
+
+					<td th:text="${quizSet.id}"></td>
+
+					<td th:text="${quizSet.category.name}"></td>
+
+					<td th:text="${quizSet.title}"></td>
+
+					<td>
+
+						<a th:href="@{/quiz/admin/quiz_set/edit(id=${quizSet.id})}" class="small-button">
+							編集
+						</a>
+
+						<form th:action="@{/quiz/admin/quiz_set/delete}" method="post" style="display:inline;" onsubmit="return confirm('この問題を削除しますか？');">
+
+							<input type="hidden" name="id" th:value="${quizSet.id}">
+
+							<button type="submit" class="small-button delete-button">削除</button>
+
+						</form>
+
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<br>
+
+		<a th:href="@{/quiz/admin}" class="small-button">
+			管理画面へ戻る
+		</a>
+
+	</div>
+
+</body>
+
+</html>

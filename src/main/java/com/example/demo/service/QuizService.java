@@ -1,57 +1,97 @@
 package com.example.demo.service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import com.example.demo.model.Question;
-import com.example.demo.model.QuizData;
-import com.example.demo.model.QuizSet;
-import com.example.demo.repository.JsonQuizRepository;
+import com.example.demo.entity.Category;
+import com.example.demo.entity.Question;
+import com.example.demo.entity.QuizSet;
+import com.example.demo.repository.CategoryRepository;
+import com.example.demo.repository.ChoiceRepository;
+import com.example.demo.repository.QuestionRepository;
+import com.example.demo.repository.QuizSetRepository;
 
 @Service
 public class QuizService {
 
-	private final Map<String, List<QuizSet>> quizSetMap;
+	private final CategoryRepository categoryRepository;
+	private final QuizSetRepository quizSetRepository;
+	private final QuestionRepository questionRepository;
+	private final ChoiceRepository choiceRepository;
 
-	public QuizService(JsonQuizRepository repository) {
+	public QuizService(
+			CategoryRepository categoryRepository,
+			QuizSetRepository quizSetRepository,
+			QuestionRepository questionRepository,
+			ChoiceRepository choiceRepository) {
 
-		QuizData quizData = repository.findAll();
-
-		Map<String, List<QuizSet>> map = new HashMap<>();
-		map.put(quizData.getCategory(), quizData.getQuizSets());
-
-		quizSetMap = map;
+		this.categoryRepository = categoryRepository;
+		this.quizSetRepository = quizSetRepository;
+		this.questionRepository = questionRepository;
+		this.choiceRepository = choiceRepository;
 	}
 
-	public List<QuizSet> getQuizSets(String category) {
-		List<QuizSet> sets = quizSetMap.get(category);
+	public List<com.example.demo.model.QuizSet> getQuizSets(String categoryName) {
 
-		if (sets == null) {
-			throw new IllegalArgumentException("存在しないカテゴリ: " + category);
-		}
+		Category category = categoryRepository.findAll()
+				.stream()
+				.filter(c -> c.getName().equalsIgnoreCase(categoryName))
+				.findFirst()
+				.orElseThrow(() -> new IllegalArgumentException(
+						"存在しないカテゴリ: " + categoryName));
 
-		return sets;
+		return category.getQuizSets()
+				.stream()
+				.map(this::toModelQuizSet)
+				.toList();
 	}
 
-	public List<Question> getQuestions(String category, int setIndex) {
-		return getQuizSets(category)
+	public List<com.example.demo.model.Question> getQuestions(
+			String categoryName,
+			int setIndex) {
+
+		return getQuizSets(categoryName)
 				.get(setIndex)
 				.getQuestions();
 	}
 
 	public boolean checkAnswer(
-			String category,
+			String categoryName,
 			int setIndex,
 			int questionIndex,
 			int userAnswer) {
 
-		return getQuizSets(category)
-				.get(setIndex)
-				.getQuestions()
+		return getQuestions(categoryName, setIndex)
 				.get(questionIndex)
 				.getAnswerIndex() == userAnswer;
+	}
+
+	private com.example.demo.model.QuizSet toModelQuizSet(
+			QuizSet entity) {
+
+		List<com.example.demo.model.Question> questions = entity.getQuestions()
+				.stream()
+				.map(this::toModelQuestion)
+				.toList();
+
+		return new com.example.demo.model.QuizSet(
+				entity.getTitle(),
+				questions);
+	}
+
+	private com.example.demo.model.Question toModelQuestion(
+			Question entity) {
+
+		List<String> choices = entity.getChoices()
+				.stream()
+				.map(choice -> choice.getChoiceText())
+				.toList();
+
+		return new com.example.demo.model.Question(
+				entity.getQuestionText(),
+				choices,
+				entity.getAnswerIndex(),
+				entity.getExplanation());
 	}
 }

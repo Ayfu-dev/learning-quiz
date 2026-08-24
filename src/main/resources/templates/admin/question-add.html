@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>問題追加</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+	<div class="container">
+
+		<form th:action="@{/quiz/admin/question/add}" method="post" class="question-form">
+
+			<div class="form-group">
+				<label>クイズセット</label>
+
+				<select name="quizSetId" required>
+					<option value="">選択してください</option>
+
+					<option th:each="quizSet : ${quizSets}" th:value="${quizSet.id}" th:text="${quizSet.title}">
+					</option>
+				</select>
+			</div>
+
+			<div class="form-group">
+				<label>問題文</label>
+
+				<textarea name="questionText" class="question-text" required></textarea>
+			</div>
+
+			<div class="form-group">
+			    <label>選択肢1</label>
+			    <input type="text" name="choiceText" required>
+			</div>
+
+			<div class="form-group">
+				<label>選択肢2</label>
+				<input type="text" name="choiceText" required>
+			</div>
+
+			<div class="form-group">
+				<label>選択肢3</label>
+				<input type="text" name="choiceText" required>
+			</div>
+
+			<div class="form-group">
+				<label>選択肢4</label>
+				<input type="text" name="choiceText" required>
+			</div>
+
+			<div class="form-group">
+				<label>正解</label>
+
+				<select name="answerIndex">
+					<option value="0">選択肢1</option>
+					<option value="1">選択肢2</option>
+					<option value="2">選択肢3</option>
+					<option value="3">選択肢4</option>
+				</select>
+			</div>
+
+			<div class="form-group">
+				<label>解説</label>
+
+				<textarea name="explanation" class="explanation"></textarea>
+			</div>
+
+			<div class="form-actions">
+				<button type="submit">追加</button>
+			</div>
+			<br><br>
+			<div>
+			    <a th:href="@{/quiz/admin/question}">
+			        クイズ管理
+			    </a>
+			</div>
+
+		</form>
+</body>
+
+</html>

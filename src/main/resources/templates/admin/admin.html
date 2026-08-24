@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>クイズ管理</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+	<div class="container">
+
+		<h1>クイズ管理</h1>
+
+		<div class="menu">
+			<a th:href="@{/quiz/admin/quiz_set}" class="button">
+				クイズセット管理
+			</a>
+		<br><br>
+			<a th:href="@{/quiz/admin/question}" class="button">
+				問題管理
+			</a>
+		</div>
+
+		<br>
+		<a th:href="@{/quiz}" class="button">クイズトップへ戻る</a>
+
+	</div>
+
+</body>
+
+</html>

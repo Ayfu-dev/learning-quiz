@@ -30,17 +30,17 @@ public class QuizController {
 	public List<Integer> userAnswers() {
 		return new ArrayList<>();
 	}
-	
+
 	@GetMapping("/{category}/list")
 	public String showQuizList(@PathVariable String category, Model model) {
-	    var sets = quizService.getQuizSets(category);
-	    model.addAttribute("category", category);
-	    model.addAttribute("quizSets", sets);
-	    return "quiz/list";
+		var sets = quizService.getQuizSets(category);
+		model.addAttribute("category", category);
+		model.addAttribute("quizSets", sets);
+		return "quiz/list";
 	}
 
-	// 問題を1問表示 カテゴリー、章、問題番号
-	@GetMapping("/{category}/{setIndex}/{questionIndex}")
+	// 問題を1問表示 カテゴリー、章、問題番号 競合を防ぐためadminをカテゴリーとして認識しないようにする
+	@GetMapping("/{category:^(?!admin$).+}/{setIndex}/{questionIndex}")
 	public String showQuestion(
 			@PathVariable String category,
 			@PathVariable int setIndex,
@@ -58,9 +58,9 @@ public class QuizController {
 
 		return "quiz/quiz";
 	}
-	
-	// 回答 → 正誤＋解説
-	@PostMapping("/{category}/{setIndex}/{questionIndex}")
+
+	// 回答 → 正誤＋解説 競合を防ぐためadminをカテゴリーとして認識しないようにする
+	@PostMapping("/{category:^(?!admin$).+}/{setIndex}/{questionIndex}")
 	public String checkAnswer(
 			@PathVariable String category,
 			@PathVariable int setIndex,
@@ -107,16 +107,16 @@ public class QuizController {
 
 		var questions = quizService.getQuestions(category, setIndex);
 
-//		採点
+		//		採点
 		int score = 0;
 		for (int i = 0; i < questions.size(); i++) {
-//		    userAnswers が足りない場合は不正解扱い（エラーにならない用の緊急回避）
-		    if (i >= userAnswers.size()) {
-		        continue;
-		    }
-		    if (questions.get(i).getAnswerIndex() == userAnswers.get(i)) {
-		        score++;
-		    }
+			//		    userAnswers が足りない場合は不正解扱い（エラーにならない用の緊急回避）
+			if (i >= userAnswers.size()) {
+				continue;
+			}
+			if (questions.get(i).getAnswerIndex() == userAnswers.get(i)) {
+				score++;
+			}
 		}
 
 		model.addAttribute("score", score);

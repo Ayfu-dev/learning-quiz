@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>クイズトップページ</title>
-	<link rel="stylesheet" th:href="@{/style.css}">
+	<link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
 <body>
@@ -16,7 +16,7 @@
 			
 			<p class="sub-title">学習したいカテゴリを選択してください</p>
 			
-			<button type="button" onclick="location.href='/quiz/aws/list'">
+			<button type="button" onclick="location.href='/quiz/aws/list'" class="button">
 				AWSクイズ
 			</button>
 		</div> <br> <br>
@@ -35,6 +35,13 @@
 			</button>
 		</div>
 	</div>
+	<br><br><br>
+	<div>
+	    <a th:href="@{/quiz/admin}">
+	        クイズ管理
+	    </a>
+	</div>
+	
 	<p class="version">
 	    Ver1.0
 	</p>

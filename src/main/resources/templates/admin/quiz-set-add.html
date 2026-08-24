@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>クイズセット追加</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+	<div class="container">
+
+		<h1>クイズセット追加</h1>
+
+		<form th:action="@{/quiz/admin/quiz_set/add}" method="post">
+
+			<div>
+				<label>カテゴリ</label>
+
+				<select name="categoryId" required>
+					<option value="">選択してください</option>
+
+					<option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}">
+					</option>
+				</select>
+			</div>
+			<br><br>
+			<div>
+				<label>タイトル</label>
+
+				<input type="text" name="title" maxlength="20" required>
+			</div>
+			<br><br>
+			<button type="submit">登録</button>
+
+		</form>
+
+		<br>
+
+		<a th:href="@{/quiz/admin/quiz_set}">
+			クイズセット一覧へ戻る
+		</a>
+
+	</div>
+
+</body>
+
+</html>
