@@ -8,12 +8,19 @@
 </head>
 
 <body>
+
 	<div class="container">
+
 		<div class="question-card">
-			<h2>解説</h2>
-			<p class="question-text" th:text="${question.questionText}"></p>
+
+			<h2>第<span th:text="${questionIndex + 1}"></span>問</h2>
+
+			<p class="question-text" th:text="${question.questionText}">
+			</p>
+
 			<hr>
-			<p>
+
+			<p class="your-answer">
 				あなたの回答：
 				<span th:text="${question.choices[userAnswer]}"></span>
 			</p>
@@ -25,20 +32,35 @@
 			<p th:if="${!correct}" class="incorrect">
 				不正解
 			</p>
+
+			<p th:if="${!correct}" class="correct-answer">
+				正解：
+				<span th:text="${question.choices[question.answerIndex]}"></span>
+			</p>
+
 			<hr>
+
 			<h3>解説</h3>
 
 			<p class="explanation" th:text="${question.explanation}">
 			</p>
 
-			<div th:with="nextUrl=@{/quiz/{c}/{s}/{q}(c=${category}, s=${setIndex}, q=${questionIndex + 1})}"
-				class="button-area">
-				<button th:attr="data-url=${nextUrl}" onclick="location.href=this.dataset.url">
+			<div th:with="nextUrl=@{/quiz/{c}/{s}/{q}
+					(c=${category}, s=${setIndex}, q=${questionIndex + 1})}" class="button-area">
+
+				<button class="button" th:attr="data-url=${nextUrl}" onclick="location.href=this.dataset.url">
 					次へ
 				</button>
+				<br><br>
+				<a th:href="@{/quiz/{c}/list(c=${category})}" class="small-button">
+					問題選択に戻る
+				</a>
 			</div>
+
 		</div>
+
 	</div>
+
 </body>
 
 </html>

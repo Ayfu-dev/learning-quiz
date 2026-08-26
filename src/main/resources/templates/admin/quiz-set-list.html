@@ -9,61 +9,77 @@
 
 <body>
 
-	<div class="container">
+	<div class="container quiz-set-list-container">
 
 		<h1>クイズセット一覧</h1>
 
-		<a th:href="@{/quiz/admin/quiz_set/add}" class="small-button">
-			クイズセットを追加
-		</a>
+		<div class="list-header">
+			<a th:href="@{/quiz/admin/quiz_set/add}" class="button">
+				クイズセットを追加
+			</a>
 
-		<a th:href="@{/quiz/admin}" class="small-button">
-			管理画面へ戻る
-		</a>
+			<a th:href="@{/quiz/admin}" class="button">
+				管理画面へ戻る
+			</a>
+		</div>
 
-		<table>
+		<!-- クイズセット一覧 -->
+		<table class="quiz-set-table">
+
 			<thead>
 				<tr>
-					<th>ID</th>
-					<th>カテゴリ</th>
-					<th>タイトル</th>
-					<th>操作</th>
+					<th class="category-column">カテゴリ</th>
+					<th class="title-column">タイトル</th>
+					<th class="action-column">操作</th>
 				</tr>
 			</thead>
 
 			<tbody>
+
 				<tr th:each="quizSet : ${quizSets}">
 
-					<td th:text="${quizSet.id}"></td>
+					<td class="category-column" th:text="${quizSet.category.name}">
+					</td>
 
-					<td th:text="${quizSet.category.name}"></td>
+					<td class="title-column" th:text="${quizSet.title}">
+					</td>
 
-					<td th:text="${quizSet.title}"></td>
-
-					<td>
+					<td class="action-column">
 
 						<a th:href="@{/quiz/admin/quiz_set/edit(id=${quizSet.id})}" class="small-button">
 							編集
 						</a>
 
-						<form th:action="@{/quiz/admin/quiz_set/delete}" method="post" style="display:inline;" onsubmit="return confirm('この問題を削除しますか？');">
+						<form th:action="@{/quiz/admin/quiz_set/delete}" method="post" class="delete-form"
+							onsubmit="return confirm('このクイズセットを削除しますか？');">
 
 							<input type="hidden" name="id" th:value="${quizSet.id}">
 
-							<button type="submit" class="small-button delete-button">削除</button>
+							<button type="submit" class="small-button delete-button">
+								削除
+							</button>
 
 						</form>
 
 					</td>
+
 				</tr>
+
+				<tr th:if="${quizSets.isEmpty()}">
+					<td colspan="3" class="no-result">
+						クイズセットがありません。
+					</td>
+				</tr>
+
 			</tbody>
+
 		</table>
 
-		<br>
-
-		<a th:href="@{/quiz/admin}" class="small-button">
-			管理画面へ戻る
-		</a>
+		<div class="list-footer">
+			<a th:href="@{/quiz/admin}" class="small-button">
+				管理画面へ戻る
+			</a>
+		</div>
 
 	</div>
 

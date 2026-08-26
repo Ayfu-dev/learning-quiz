@@ -9,69 +9,96 @@
 
 <body>
 
-	<div class="container">
+	<div class="container question-list-container">
 
 		<h1>問題一覧</h1>
 
-		<a th:href="@{/quiz/admin/question/add}" class="button">
-			問題を追加
-		</a>
+		<div class="list-header">
+			<a th:href="@{/quiz/admin/question/add}" class="button">
+				問題を追加
+			</a>
 
-		<a th:href="@{/quiz/admin}" class="button">
-			管理画面へ戻る
-		</a>
+			<a th:href="@{/quiz/admin}" class="button">
+				管理画面へ戻る
+			</a>
+		</div>
 
+		<!-- 検索・絞り込み -->
+		<div class="question-filter">
 
-		<form th:action="@{/quiz/admin/question}" method="get">
+			<div class="filter-item">
+				<label for="categoryId">カテゴリ</label>
+				<select id="categoryId" name="categoryId" form="question-search-form">
+					<option value="">すべて</option>
 
-			<label for="categoryId">カテゴリ：</label>
-			<select id="categoryId" name="categoryId">
-				<option value="">すべて</option>
+					<option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"
+						th:selected="${category.id == selectedCategoryId}">
+					</option>
+				</select>
+			</div>
 
-				<option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"
-					th:selected="${category.id == selectedCategoryId}">
-				</option>
-			</select>
+			<div class="filter-item">
+				<label for="quizSetId">章</label>
+				<select id="quizSetId" name="quizSetId" form="question-search-form">
+					<option value="">すべて</option>
 
-			<label for="quizSetId">章：</label>
-			<select id="quizSetId" name="quizSetId">
-				<option value="">すべて</option>
+					<option th:each="quizSet : ${quizSets}" th:value="${quizSet.id}" th:text="${quizSet.title}"
+						th:selected="${quizSet.id == selectedQuizSetId}">
+					</option>
+				</select>
+			</div>
 
-				<option th:each="quizSet : ${quizSets}" th:value="${quizSet.id}" th:text="${quizSet.title}"
-					th:selected="${quizSet.id == selectedQuizSetId}">
-				</option>
-			</select>
+			<div class="filter-item keyword-item">
+				<label for="keyword">問題検索</label>
+				<input type="text" id="keyword" name="keyword" th:value="${keyword}" placeholder="問題文を入力"
+					form="question-search-form">
+			</div>
 
-			<button type="submit" class="small-button">
-				絞り込み
-			</button>
+			<div class="filter-action">
+				<form id="question-search-form" th:action="@{/quiz/admin/question}" method="get">
 
-		</form>
-		<table>
+					<button type="submit" class="button">
+						検索
+					</button>
+
+				</form>
+			</div>
+
+		</div>
+
+		<!-- 件数 -->
+		<div class="question-count">
+			<span th:text="${questions.size()}"></span> 件
+		</div>
+
+		<!-- 問題一覧 -->
+		<table class="question-table">
+
 			<thead>
 				<tr>
-					<th>ID</th>
-					<th>クイズセット</th>
-					<th>問題文</th>
-					<th>操作</th>
+					<th class="quiz-set-column">クイズセット</th>
+					<th class="question-column">問題文</th>
+					<th class="action-column">操作</th>
 				</tr>
 			</thead>
 
 			<tbody>
+
 				<tr th:each="question : ${questions}">
 
-					<td th:text="${question.id}"></td>
+					<td class="quiz-set-column" th:text="${question.quizSet.title}">
+					</td>
 
-					<td th:text="${question.quizSet.title}"></td>
+					<td class="question-column" th:text="${question.questionText}">
+					</td>
 
-					<td th:text="${question.questionText}"></td>
+					<td class="action-column">
 
-					<td>
 						<a th:href="@{/quiz/admin/question/edit(id=${question.id})}" class="small-button">
 							編集
 						</a>
 
-						<form th:action="@{/quiz/admin/question/delete}" method="post" style="display:inline;"
+						<form th:action="@{/quiz/admin/question/delete}" method="post" class="delete-form"
 							onsubmit="return confirm('この問題を削除しますか？');">
 
 							<input type="hidden" name="id" th:value="${question.id}">
@@ -81,17 +108,26 @@
 							</button>
 
 						</form>
+
 					</td>
 
 				</tr>
+
+				<tr th:if="${questions.isEmpty()}">
+					<td colspan="3" class="no-result">
+						該当する問題がありません。
+					</td>
+				</tr>
+
 			</tbody>
+
 		</table>
 
-		<br>
-
-		<a th:href="@{/quiz/admin}" class="small-button">
-			管理画面へ戻る
-		</a>
+		<div class="list-footer">
+			<a th:href="@{/quiz/admin}" class="small-button">
+				管理画面へ戻る
+			</a>
+		</div>
 
 	</div>
 

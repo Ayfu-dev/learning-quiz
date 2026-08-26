@@ -1,4 +1,40 @@
 @charset "UTF-8";
+/* =========================
+   管理者ログイン
+   ========================= */
+
+.admin-login-form {
+	max-width: 400px;
+	margin: 30px auto 0;
+}
+
+.admin-login-form label {
+	display: block;
+	margin-bottom: 8px;
+	font-weight: bold;
+}
+
+.admin-login-form input[type="password"] {
+	width: 100%;
+	box-sizing: border-box;
+	padding: 12px;
+	font-size: 16px;
+	border: 1px solid #bbb;
+	border-radius: 5px;
+}
+
+.admin-login-form input[type="password"]:focus {
+	outline: none;
+	border-color: #6795fd;
+	box-shadow: 0 0 0 2px rgba(103, 149, 253, 0.15);
+}
+
+.login-error {
+	color: #d32f2f;
+	font-weight: bold;
+	margin-top: 10px;
+}
+
 
 .container {
 	width: 800px;
@@ -24,6 +60,19 @@
 	text-align: center;
 }
 
+.quiz-set-card {
+	padding: 25px 35px;
+}
+
+.quiz-set-card h2 {
+	margin-bottom: 10px;
+}
+
+.quiz-set-card p {
+	margin: 0;
+	color: #666;
+}
+
 .question-text {
 	font-size: 22px;
 	font-weight: bold;
@@ -36,9 +85,20 @@
 }
 
 .question-button {
-	width: 30px;
-	min-width: 30px;
+	width: 42px;
+	height: 42px;
 	margin: 5px;
+	padding: 0;
+	border: 1px solid #bbb;
+	border-radius: 5px;
+	background: #fff;
+	cursor: pointer;
+	font-size: 15px;
+	font-weight: bold;
+}
+.question-button:hover {
+	background: #f3f8ff;
+	border-color: #6795fd;
 }
 
 body {
@@ -110,90 +170,90 @@ h1 {
 
 /* 通常ボタン */
 .button {
-    display: inline-block;
-    padding: 0.6em 1.2em;
-    box-sizing: border-box;
+	display: inline-block;
+	padding: 0.6em 1.2em;
+	box-sizing: border-box;
 
-    text-decoration: none;
-    text-align: center;
+	text-decoration: none;
+	text-align: center;
 
-    border-radius: 4px;
+	border-radius: 4px;
 
-    color: #ffffff;
-    background-image: linear-gradient(#6795fd 0%, #67ceff 100%);
+	color: #ffffff;
+	background-image: linear-gradient(#6795fd 0%, #67ceff 100%);
 
-    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.29);
+	box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.29);
 
-    border: none;
-    border-bottom: solid 3px #5e7fca;
+	border: none;
+	border-bottom: solid 3px #5e7fca;
 
-    font-family: inherit;
-    font-size: 15px;
-    font-weight: bold;
+	font-family: inherit;
+	font-size: 15px;
+	font-weight: bold;
 
-    cursor: pointer;
+	cursor: pointer;
 }
 
 .button:hover {
-    opacity: 0.9;
+	opacity: 0.9;
 }
 
 .button:active {
-    transform: translateY(2px);
-    box-shadow: none;
-    border-bottom: solid 1px #5e7fca;
+	transform: translateY(2px);
+	box-shadow: none;
+	border-bottom: solid 1px #5e7fca;
 }
 
 
 /* 一覧画面などの小さいボタン */
 .small-button {
-    display: inline-block;
-    padding: 0.5em 1em;
-    box-sizing: border-box;
+	display: inline-block;
+	padding: 0.5em 1em;
+	box-sizing: border-box;
 
-    text-decoration: none;
-    text-align: center;
+	text-decoration: none;
+	text-align: center;
 
-    border-radius: 4px;
+	border-radius: 4px;
 
-    color: #ffffff;
-    background-image: linear-gradient(#6795fd 0%, #67ceff 100%);
+	color: #ffffff;
+	background-image: linear-gradient(#6795fd 0%, #67ceff 100%);
 
-    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.29);
+	box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.29);
 
-    border: none;
-    border-bottom: solid 3px #5e7fca;
+	border: none;
+	border-bottom: solid 3px #5e7fca;
 
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: bold;
+	font-family: inherit;
+	font-size: 14px;
+	font-weight: bold;
 
-    cursor: pointer;
+	cursor: pointer;
 }
 
 .small-button:hover {
-    opacity: 0.9;
+	opacity: 0.9;
 }
 
 .small-button:active {
-    transform: translateY(2px);
-    box-shadow: none;
-    border-bottom: solid 1px #5e7fca;
+	transform: translateY(2px);
+	box-shadow: none;
+	border-bottom: solid 1px #5e7fca;
 }
 
 
 /* 削除ボタン */
 .delete-button {
-    background-image: linear-gradient(#ef6b6b 0%, #e53935 100%);
-    border-bottom-color: #c62828;
+	background-image: linear-gradient(#ef6b6b 0%, #e53935 100%);
+	border-bottom-color: #c62828;
 }
 
 .delete-button:hover {
-    opacity: 0.9;
+	opacity: 0.9;
 }
 
 .delete-button:active {
-    border-bottom-color: #a61c1c;
+	border-bottom-color: #a61c1c;
 }
 
 .button-area {
@@ -253,6 +313,12 @@ hr {
 	background-color: #fff;
 }
 
+.correct-answer {
+	font-size: 18px;
+	font-weight: bold;
+	margin-top: -5px;
+}
+
 /* 問題文・解説 */
 .question-form textarea {
 	display: block;
@@ -269,7 +335,7 @@ hr {
 
 /* 問題文 */
 .question-form .question-text {
-	min-height: 120px;
+	min-height: 100px;
 }
 
 /* 解説 */
@@ -311,4 +377,259 @@ hr {
 /* フォーム下部 */
 .question-form .form-actions {
 	margin-top: 30px;
+}
+
+/* =========================
+   問題一覧
+   ========================= */
+
+.question-list-container {
+	width: 90%;
+	max-width: 1200px;
+}
+
+/* 上部ボタン */
+
+.list-header {
+	display: flex;
+	gap: 10px;
+	margin-bottom: 25px;
+}
+
+/* 検索エリア */
+
+.question-filter {
+	display: flex;
+	align-items: flex-end;
+	gap: 15px;
+	margin-bottom: 15px;
+	padding: 20px;
+	background: #ffffff;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+}
+
+.filter-item {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.filter-item label {
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.filter-item select,
+.filter-item input {
+	height: 38px;
+	padding: 6px 10px;
+	box-sizing: border-box;
+	font-size: 14px;
+	border: 1px solid #bbb;
+	border-radius: 5px;
+	background-color: #fff;
+}
+
+.filter-item select:focus,
+.filter-item input:focus {
+	outline: none;
+	border-color: #6795fd;
+	box-shadow: 0 0 0 2px rgba(103, 149, 253, 0.15);
+}
+
+.keyword-item {
+	flex: 1;
+}
+
+.keyword-item input {
+	width: 100%;
+}
+
+.filter-action {
+	margin-left: auto;
+}
+
+/* 件数 */
+
+.question-count {
+	margin: 15px 0 8px;
+	font-size: 14px;
+	color: #666;
+	text-align: right;
+}
+
+/* 問題一覧テーブル */
+
+.question-table {
+	width: 100%;
+	border-collapse: collapse;
+	background: #ffffff;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	overflow: hidden;
+	table-layout: fixed;
+}
+
+/* ヘッダー */
+
+.question-table th {
+	padding: 14px 12px;
+	background: #f0f4f8;
+	border-bottom: 2px solid #ccc;
+	font-size: 14px;
+	text-align: left;
+}
+
+/* セル */
+
+.question-table td {
+	padding: 14px 12px;
+	border-bottom: 1px solid #ddd;
+	vertical-align: middle;
+}
+
+/* 最後の行 */
+
+.question-table tbody tr:last-child td {
+	border-bottom: none;
+}
+
+/* 行のホバー */
+
+.question-table tbody tr:hover {
+	background-color: #f8fbff;
+}
+
+/* 列幅 */
+
+.question-table .quiz-set-column {
+	width: 18%;
+}
+
+.question-table .question-column {
+	width: auto;
+}
+
+.question-table .action-column {
+	width: 150px;
+	text-align: center;
+	white-space: nowrap;
+}
+
+/* 問題文 */
+
+.question-table .question-column {
+	line-height: 1.6;
+	word-break: break-word;
+}
+
+/* 操作 */
+
+.question-table .action-column .small-button {
+	margin: 2px;
+}
+
+.delete-form {
+	display: inline;
+}
+
+/* 検索結果なし */
+
+.question-table .no-result {
+	padding: 40px 20px;
+	text-align: center;
+	color: #777;
+}
+
+/* 下部ボタン */
+
+.list-footer {
+	margin-top: 25px;
+	text-align: center;
+}
+
+/* =========================
+   結果画面
+   ========================= */
+
+.result-actions {
+	margin-top: 35px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 15px;
+}
+
+/* =========================
+   クイズセット一覧
+   ========================= */
+
+.quiz-set-list-container {
+	width: 90%;
+	max-width: 1000px;
+}
+
+/* クイズセット一覧テーブル */
+
+.quiz-set-table {
+	width: 100%;
+	border-collapse: collapse;
+	background: #ffffff;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	overflow: hidden;
+	table-layout: fixed;
+}
+
+/* ヘッダー */
+
+.quiz-set-table th {
+	padding: 14px 12px;
+	background: #f0f4f8;
+	border-bottom: 2px solid #ccc;
+	font-size: 14px;
+	text-align: left;
+}
+
+/* セル */
+
+.quiz-set-table td {
+	padding: 14px 12px;
+	border-bottom: 1px solid #ddd;
+	vertical-align: middle;
+}
+
+/* 最後の行 */
+
+.quiz-set-table tbody tr:last-child td {
+	border-bottom: none;
+}
+
+/* 行のホバー */
+
+.quiz-set-table tbody tr:hover {
+	background-color: #f8fbff;
+}
+
+/* 列幅 */
+
+.quiz-set-table .category-column {
+	width: 20%;
+}
+
+.quiz-set-table .title-column {
+	width: auto;
+}
+
+.quiz-set-table .action-column {
+	width: 150px;
+	text-align: center;
+	white-space: nowrap;
+}
+
+/* 操作 */
+
+.quiz-set-table .action-column .small-button {
+	margin: 2px;
 }

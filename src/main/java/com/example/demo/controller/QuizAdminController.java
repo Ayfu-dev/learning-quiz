@@ -2,6 +2,9 @@ package com.example.demo.controller;
 
 import java.util.List;
 
+import jakarta.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +27,19 @@ public class QuizAdminController {
 	private final QuizSetRepository quizSetRepository;
 	private final QuestionRepository questionRepository;
 	private final CategoryRepository categoryRepository;
+	
+	//パスワード設定 application.properties
+	@Value("${admin.password}")
+	private String adminPassword;
+	
+	private boolean isAuthenticated(HttpSession session) {
 
+		Boolean authenticated =
+				(Boolean) session.getAttribute("adminAuthenticated");
+
+		return Boolean.TRUE.equals(authenticated);
+	}
+	
 	public QuizAdminController(
 			QuizAdminService quizAdminService,
 			QuizSetRepository quizSetRepository,
@@ -36,12 +51,43 @@ public class QuizAdminController {
 		this.questionRepository = questionRepository;
 		this.categoryRepository = categoryRepository;
 	}
-
+	
 	@GetMapping
-	public String showAdmin() {
+	public String showAdmin(HttpSession session) {
+
+		Boolean authenticated =
+				(Boolean) session.getAttribute("adminAuthenticated");
+
+		if (!Boolean.TRUE.equals(authenticated)) {
+			return "redirect:/quiz/admin/login";
+		}
+
 		return "admin/admin";
 	}
 
+	@GetMapping("/login")
+	public String showLogin() {
+		return "admin/login";
+	}
+	
+	@PostMapping("/login")
+	public String login(
+			@RequestParam String password,
+			HttpSession session,
+			Model model) {
+		
+		if (adminPassword.equals(password)) {
+
+			session.setAttribute("adminAuthenticated", true);
+
+			return "redirect:/quiz/admin";
+		}
+
+		model.addAttribute("error", "パスワードが違います");
+
+		return "admin/login";
+	}
+	
 	@GetMapping("/quiz_set")
 	public String showQuizSetList(Model model) {
 
@@ -66,7 +112,7 @@ public class QuizAdminController {
 	public String addQuizSet(
 			@RequestParam Integer categoryId,
 			@RequestParam String title) {
-
+		
 		quizAdminService.addQuizSet(
 				categoryId,
 				title);
@@ -117,6 +163,7 @@ public class QuizAdminController {
 	//  問題追加
 	@GetMapping("/question/add")
 	public String showQuestionAdd(Model model) {
+		
 		model.addAttribute(
 				"quizSets",
 				quizSetRepository.findAll());
@@ -143,60 +190,100 @@ public class QuizAdminController {
 
 	@GetMapping("/question")
 	public String showQuestionList(
-	        @RequestParam(required = false) Integer categoryId,
-	        @RequestParam(required = false) Integer quizSetId,
-	        Model model) {
+			@RequestParam(required = false) Integer categoryId,
+			@RequestParam(required = false) Integer quizSetId,
+			@RequestParam(required = false) String keyword,
+			Model model) {
 
-	    List<Question> questions;
+		List<Question> questions;
 
-	    if (categoryId != null && quizSetId != null) {
+		boolean hasKeyword = keyword != null && !keyword.isBlank();
 
-	        questions = questionRepository
-	                .findByQuizSetCategoryIdAndQuizSetId(
-	                        categoryId,
-	                        quizSetId);
+		if (hasKeyword) {
 
-	    } else if (categoryId != null) {
+			keyword = keyword.trim();
 
-	        questions = questionRepository
-	                .findByQuizSetCategoryId(categoryId);
+			if (categoryId != null && quizSetId != null) {
 
-	    } else if (quizSetId != null) {
+				questions = questionRepository
+						.findByQuizSetCategoryIdAndQuizSetIdAndQuestionTextContainingIgnoreCase(
+								categoryId,
+								quizSetId,
+								keyword);
 
-	        questions = questionRepository
-	                .findByQuizSetId(quizSetId);
+			} else if (categoryId != null) {
 
-	    } else {
+				questions = questionRepository
+						.findByQuizSetCategoryIdAndQuestionTextContainingIgnoreCase(
+								categoryId,
+								keyword);
 
-	        questions = questionRepository.findAll();
-	    }
+			} else if (quizSetId != null) {
 
-	    // カテゴリ
-	    model.addAttribute(
-	            "categories",
-	            categoryRepository.findAll());
+				questions = questionRepository
+						.findByQuizSetIdAndQuestionTextContainingIgnoreCase(
+								quizSetId,
+								keyword);
 
-	    // カテゴリが選択されていれば、そのカテゴリの章だけ取得
-	    List<QuizSet> quizSets;
+			} else {
 
-	    if (categoryId != null) {
+				questions = questionRepository
+						.findByQuestionTextContainingIgnoreCase(keyword);
+			}
 
-	        quizSets = quizSetRepository
-	                .findByCategoryId(categoryId);
+		} else {
 
-	    } else {
+			if (categoryId != null && quizSetId != null) {
 
-	        quizSets = quizSetRepository.findAll();
-	    }
+				questions = questionRepository
+						.findByQuizSetCategoryIdAndQuizSetId(
+								categoryId,
+								quizSetId);
 
-	    model.addAttribute("quizSets", quizSets);
+			} else if (categoryId != null) {
 
-	    model.addAttribute("questions", questions);
-	    model.addAttribute("selectedCategoryId", categoryId);
-	    model.addAttribute("selectedQuizSetId", quizSetId);
+				questions = questionRepository
+						.findByQuizSetCategoryId(categoryId);
 
-	    return "admin/question-list";
+			} else if (quizSetId != null) {
+
+				questions = questionRepository
+						.findByQuizSetId(quizSetId);
+
+			} else {
+
+				questions = questionRepository.findAll();
+			}
+		}
+
+		// カテゴリ
+		model.addAttribute(
+				"categories",
+				categoryRepository.findAll());
+
+		// 章
+		List<QuizSet> quizSets;
+
+		if (categoryId != null) {
+
+			quizSets = quizSetRepository
+					.findByCategoryId(categoryId);
+
+		} else {
+
+			quizSets = quizSetRepository.findAll();
+		}
+
+		model.addAttribute("quizSets", quizSets);
+
+		model.addAttribute("questions", questions);
+		model.addAttribute("selectedCategoryId", categoryId);
+		model.addAttribute("selectedQuizSetId", quizSetId);
+		model.addAttribute("keyword", keyword);
+
+		return "admin/question-list";
 	}
+
 	@GetMapping("/question/edit")
 	public String showQuestionEdit(
 			@RequestParam Integer id,
