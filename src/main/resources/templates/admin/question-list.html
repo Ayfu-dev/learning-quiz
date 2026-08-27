@@ -9,128 +9,252 @@
 
 <body>
 
-	<div class="container question-list-container">
+<div class="container question-list-container">
 
-		<h1>問題一覧</h1>
+	<h1>問題一覧</h1>
 
-		<div class="list-header">
-			<a th:href="@{/quiz/admin/question/add}" class="button">
-				問題を追加
-			</a>
+	<div class="list-header">
 
-			<a th:href="@{/quiz/admin}" class="button">
-				管理画面へ戻る
-			</a>
-		</div>
+		<a th:href="@{/quiz/admin/question/add}" class="button">
+			問題を追加
+		</a>
 
-		<!-- 検索・絞り込み -->
-		<div class="question-filter">
+		<a th:href="@{/quiz/admin}" class="button">
+			管理画面へ戻る
+		</a>
 
-			<div class="filter-item">
-				<label for="categoryId">カテゴリ</label>
-				<select id="categoryId" name="categoryId" form="question-search-form">
-					<option value="">すべて</option>
+	</div>
 
-					<option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"
-						th:selected="${category.id == selectedCategoryId}">
-					</option>
-				</select>
-			</div>
 
-			<div class="filter-item">
-				<label for="quizSetId">章</label>
-				<select id="quizSetId" name="quizSetId" form="question-search-form">
-					<option value="">すべて</option>
+	<!-- 検索・絞り込み -->
+	<div class="question-filter">
 
-					<option th:each="quizSet : ${quizSets}" th:value="${quizSet.id}" th:text="${quizSet.title}"
-						th:selected="${quizSet.id == selectedQuizSetId}">
-					</option>
-				</select>
-			</div>
+		<div class="filter-item">
 
-			<div class="filter-item keyword-item">
-				<label for="keyword">問題検索</label>
-				<input type="text" id="keyword" name="keyword" th:value="${keyword}" placeholder="問題文を入力"
+			<label for="categoryId">カテゴリ</label>
+
+			<select id="categoryId"
+					name="categoryId"
 					form="question-search-form">
-			</div>
 
-			<div class="filter-action">
-				<form id="question-search-form" th:action="@{/quiz/admin/question}" method="get">
+				<option value="">すべて</option>
 
-					<button type="submit" class="button">
-						検索
-					</button>
+				<option th:each="category : ${categories}"
+						th:value="${category.id}"
+						th:text="${category.name}"
+						th:selected="${category.id == selectedCategoryId}">
+				</option>
 
-				</form>
-			</div>
+			</select>
 
 		</div>
 
-		<!-- 件数 -->
-		<div class="question-count">
-			<span th:text="${questions.size()}"></span> 件
+
+		<div class="filter-item">
+
+			<label for="quizSetId">章</label>
+
+			<select id="quizSetId"
+					name="quizSetId"
+					form="question-search-form">
+
+				<option value="">すべて</option>
+
+				<option th:each="quizSet : ${quizSets}"
+						th:value="${quizSet.id}"
+						th:text="${quizSet.title}"
+						th:selected="${quizSet.id == selectedQuizSetId}">
+				</option>
+
+			</select>
+
 		</div>
 
-		<!-- 問題一覧 -->
-		<table class="question-table">
 
-			<thead>
-				<tr>
-					<th class="quiz-set-column">クイズセット</th>
-					<th class="question-column">問題文</th>
-					<th class="action-column">操作</th>
-				</tr>
-			</thead>
+		<div class="filter-item keyword-item">
 
-			<tbody>
+			<label for="keyword">問題検索</label>
 
-				<tr th:each="question : ${questions}">
+			<input type="text"
+				   id="keyword"
+				   name="keyword"
+				   th:value="${keyword}"
+				   placeholder="問題文を入力"
+				   form="question-search-form">
 
-					<td class="quiz-set-column" th:text="${question.quizSet.title}">
-					</td>
+		</div>
 
-					<td class="question-column" th:text="${question.questionText}">
-					</td>
 
-					<td class="action-column">
+		<div class="filter-action">
 
-						<a th:href="@{/quiz/admin/question/edit(id=${question.id})}" class="small-button">
-							編集
-						</a>
+			<form id="question-search-form"
+				  th:action="@{/quiz/admin/question}"
+				  method="get">
 
-						<form th:action="@{/quiz/admin/question/delete}" method="post" class="delete-form"
-							onsubmit="return confirm('この問題を削除しますか？');">
+				<button type="submit" class="button">
+					検索
+				</button>
 
-							<input type="hidden" name="id" th:value="${question.id}">
+			</form>
 
-							<button type="submit" class="small-button delete-button">
-								削除
-							</button>
-
-						</form>
-
-					</td>
-
-				</tr>
-
-				<tr th:if="${questions.isEmpty()}">
-					<td colspan="3" class="no-result">
-						該当する問題がありません。
-					</td>
-				</tr>
-
-			</tbody>
-
-		</table>
-
-		<div class="list-footer">
-			<a th:href="@{/quiz/admin}" class="small-button">
-				管理画面へ戻る
-			</a>
 		</div>
 
 	</div>
 
-</body>
 
+	<!-- 件数 -->
+	<div class="question-count">
+
+		<span th:text="${questions.size()}"></span> 件
+
+	</div>
+
+
+	<!--
+		並び順保存用フォーム
+		テーブルの外に置くことでフォームの入れ子を防ぐ
+	-->
+	<form id="question-order-form"
+		  th:if="${selectedQuizSetId != null}"
+		  th:action="@{/quiz/admin/question/order}"
+		  method="post">
+
+		<input type="hidden"
+			   name="quizSetId"
+			   th:value="${selectedQuizSetId}">
+
+	</form>
+
+
+	<!-- 問題一覧 -->
+	<table class="question-table">
+
+		<thead>
+
+			<tr>
+
+				<th class="order-column">
+					順番
+				</th>
+
+				<th class="quiz-set-column">
+					クイズセット
+				</th>
+
+				<th class="question-column">
+					問題文
+				</th>
+
+				<th class="action-column">
+					操作
+				</th>
+
+			</tr>
+
+		</thead>
+
+
+		<tbody>
+
+			<tr th:each="question : ${questions}">
+
+				<!-- 並び順 -->
+				<td class="order-column">
+
+					<input type="number"
+						   name="questionOrders"
+						   class="order-input"
+						   min="1"
+						   th:value="${question.questionOrder}"
+						   form="question-order-form"
+						   required>
+
+					<input type="hidden"
+						   name="questionIds"
+						   th:value="${question.id}"
+						   form="question-order-form">
+
+				</td>
+
+
+				<!-- クイズセット -->
+				<td class="quiz-set-column"
+					th:text="${question.quizSet.title}">
+				</td>
+
+
+				<!-- 問題文 -->
+				<td class="question-column"
+					th:text="${question.questionText}">
+				</td>
+
+
+				<!-- 操作 -->
+				<td class="action-column">
+
+					<a th:href="@{/quiz/admin/question/edit(id=${question.id})}"
+					   class="small-button">
+						編集
+					</a>
+
+
+					<form th:action="@{/quiz/admin/question/delete}"
+						  method="post"
+						  class="delete-form"
+						  onsubmit="return confirm('この問題を削除しますか？');">
+
+						<input type="hidden"
+							   name="id"
+							   th:value="${question.id}">
+
+						<button type="submit"
+								class="small-button delete-button">
+							削除
+						</button>
+
+					</form>
+
+				</td>
+
+			</tr>
+
+
+			<tr th:if="${questions.isEmpty()}">
+
+				<td colspan="4" class="no-result">
+					該当する問題がありません。
+				</td>
+
+			</tr>
+
+		</tbody>
+
+	</table>
+
+
+	<!-- 並び順保存 -->
+	<div th:if="${selectedQuizSetId != null}"
+		 class="order-save-area">
+
+		<button type="submit"
+				form="question-order-form"
+				class="button">
+			並び順を保存
+		</button>
+
+	</div>
+
+
+	<div class="list-footer">
+
+		<a th:href="@{/quiz/admin}"
+		   class="small-button">
+			管理画面へ戻る
+		</a>
+
+	</div>
+
+</div>
+
+</body>
 </html>

@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -43,6 +44,7 @@ public class QuizService {
 
 		return category.getQuizSets()
 				.stream()
+				.sorted(Comparator.comparing(QuizSet::getQuizSetOrder))
 				.map(this::toModelQuizSet)
 				.toList();
 	}
@@ -72,6 +74,7 @@ public class QuizService {
 
 		List<com.example.demo.model.Question> questions = entity.getQuestions()
 				.stream()
+				.sorted(Comparator.comparing(Question::getQuestionOrder))
 				.map(this::toModelQuestion)
 				.toList();
 

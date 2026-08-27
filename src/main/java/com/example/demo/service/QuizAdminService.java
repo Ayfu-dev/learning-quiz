@@ -47,11 +47,18 @@ public class QuizAdminService {
 				.orElseThrow(() -> new IllegalArgumentException(
 						"存在しないクイズセット: " + quizSetId));
 
+		// 新しい問題を最後尾に追加
+		Integer maxOrder = questionRepository.findMaxQuestionOrder(quizSet);
+		Integer questionOrder = maxOrder + 1;
+
 		Question question = new Question(
 				quizSet,
 				questionText,
 				answerIndex,
-				explanation);
+				explanation,
+				questionOrder);
+
+		question.setQuestionOrder(questionOrder);
 
 		questionRepository.save(question);
 
@@ -111,6 +118,9 @@ public class QuizAdminService {
 				.orElseThrow(() -> new IllegalArgumentException(
 						"存在しない問題: " + id));
 
+		QuizSet quizSet = question.getQuizSet();
+		Integer questionOrder = question.getQuestionOrder();
+
 		// 紐づいている選択肢を削除
 		List<Choice> choices = question.getChoices();
 
@@ -120,6 +130,11 @@ public class QuizAdminService {
 
 		// 問題を削除
 		questionRepository.delete(question);
+
+		// 後ろの問題の順番を1つ前に詰める
+		questionRepository.decrementQuestionOrder(
+				quizSet,
+				questionOrder);
 	}
 
 	// クイズセット 章追加
@@ -138,7 +153,7 @@ public class QuizAdminService {
 
 		quizSetRepository.save(quizSet);
 	}
-	
+
 	// 章編集
 	@Transactional
 	public void editQuizSet(
@@ -160,32 +175,94 @@ public class QuizAdminService {
 
 		quizSetRepository.save(quizSet);
 	}
-	
+
 	@Transactional
 	public void deleteQuizSet(Integer id) {
 
-	    QuizSet quizSet = quizSetRepository.findById(id)
-	            .orElseThrow(() ->
-	                    new IllegalArgumentException(
-	                            "存在しないクイズセット: " + id));
+		QuizSet quizSet = quizSetRepository.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException(
+						"存在しないクイズセット: " + id));
 
-	    // クイズセットに属する問題を取得
-	    List<Question> questions = questionRepository.findByQuizSet(quizSet);
+		// クイズセットに属する問題を取得
+		List<Question> questions = questionRepository.findByQuizSet(quizSet);
+		// 問題と選択肢を削除
+		for (Question question : questions) {
 
-	    // 問題と選択肢を削除
-	    for (Question question : questions) {
+			List<Choice> choices = question.getChoices();
 
-	        List<Choice> choices = question.getChoices();
+			for (Choice choice : choices) {
+				choiceRepository.delete(choice);
+			}
 
-	        for (Choice choice : choices) {
-	            choiceRepository.delete(choice);
-	        }
+			questionRepository.delete(question);
+		}
 
-	        questionRepository.delete(question);
-	    }
-
-	    // クイズセットを削除
-	    quizSetRepository.delete(quizSet);
+		// クイズセットを削除
+		quizSetRepository.delete(quizSet);
 	}
-	
+
+	@Transactional
+	public void updateQuestionOrder(
+			Integer quizSetId,
+			List<Integer> questionIds,
+			List<Integer> questionOrders) {
+
+		QuizSet quizSet = quizSetRepository.findById(quizSetId)
+				.orElseThrow(() -> new IllegalArgumentException(
+						"存在しないクイズセット: " + quizSetId));
+
+		List<Question> questions = questionRepository.findByQuizSetOrderByQuestionOrder(quizSet);
+
+		int questionCount = questions.size();
+
+		// 件数と入力数が一致するか
+		if (questionIds.size() != questionCount
+				|| questionOrders.size() != questionCount) {
+
+			throw new IllegalArgumentException(
+					"問題の並び順を正しく入力してください。");
+		}
+
+		// 1～Nの範囲か確認
+		boolean[] used = new boolean[questionCount + 1];
+
+		for (Integer order : questionOrders) {
+
+			if (order == null
+					|| order < 1
+					|| order > questionCount) {
+
+				throw new IllegalArgumentException(
+						"順番は1～" + questionCount + "の範囲で入力してください。");
+			}
+
+			// 重複チェック
+			if (used[order]) {
+
+				throw new IllegalArgumentException(
+						"同じ順番が重複しています。");
+			}
+
+			used[order] = true;
+		}
+
+		// 問題の順番を更新
+		for (int i = 0; i < questionIds.size(); i++) {
+
+			Integer questionId = questionIds.get(i);
+			Integer questionOrder = questionOrders.get(i);
+
+			Question question = questionRepository.findById(questionId)
+					.orElseThrow(() -> new IllegalArgumentException(
+							"存在しない問題: " + questionId));
+
+			// 別のクイズセットの問題を変更できないようにする
+			if (!question.getQuizSet().getId().equals(quizSetId)) {
+				throw new IllegalArgumentException(
+						"指定された問題がクイズセットと一致しません。");
+			}
+
+			question.setQuestionOrder(questionOrder);
+		}
+	}
 }

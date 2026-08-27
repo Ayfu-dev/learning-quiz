@@ -36,14 +36,19 @@ public class Question {
 
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
     private List<Choice> choices;
+    
+    @Column(name = "question_order", nullable = false)
+    private Integer questionOrder;
 
-    protected Question() {}
+	protected Question() {}
 
-    public Question(QuizSet quizSet, String questionText, Integer answerIndex, String explanation) {
+    public Question(QuizSet quizSet, String questionText, Integer answerIndex,
+    				String explanation, Integer questionOrder) {
         this.quizSet = quizSet;
         this.questionText = questionText;
         this.answerIndex = answerIndex;
         this.explanation = explanation;
+        this.questionOrder = questionOrder;
     }
     
     public void update(
@@ -58,6 +63,14 @@ public class Question {
         this.explanation = explanation;
     }
 
+    public Integer getQuestionOrder() {
+ 		return questionOrder;
+ 	}
+    
+    public void setQuestionOrder(Integer questionOrder) {
+        this.questionOrder = questionOrder;
+    }
+    
     public Integer getId() {
         return id;
     }

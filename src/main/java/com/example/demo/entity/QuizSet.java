@@ -30,6 +30,9 @@ public class QuizSet {
 
     @OneToMany(mappedBy = "quizSet", fetch = FetchType.LAZY)
     private List<Question> questions;
+    
+    @Column(name = "quiz_set_order", nullable = false)
+    private Integer quizSetOrder;
 
     protected QuizSet() {}
 
@@ -60,5 +63,9 @@ public class QuizSet {
 
     public List<Question> getQuestions() {
         return List.copyOf(questions);
+    }
+    
+    public Integer getQuizSetOrder() {
+        return quizSetOrder;
     }
 }

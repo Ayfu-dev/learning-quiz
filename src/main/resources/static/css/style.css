@@ -496,12 +496,15 @@ hr {
 }
 
 /* 行のホバー */
-
 .question-table tbody tr:hover {
 	background-color: #f8fbff;
 }
 
 /* 列幅 */
+.question-table .order-column {
+	width: 60px;
+	text-align: center;
+}
 
 .question-table .quiz-set-column {
 	width: 18%;
@@ -540,6 +543,24 @@ hr {
 	padding: 40px 20px;
 	text-align: center;
 	color: #777;
+}
+
+/* 並び順入力 */
+.order-input {
+	width: 45px;
+	height: 32px;
+	padding: 4px;
+	box-sizing: border-box;
+	text-align: center;
+	font-size: 14px;
+	border: 1px solid #bbb;
+	border-radius: 4px;
+}
+
+.order-input:focus {
+	outline: none;
+	border-color: #6795fd;
+	box-shadow: 0 0 0 2px rgba(103, 149, 253, 0.15);
 }
 
 /* 下部ボタン */

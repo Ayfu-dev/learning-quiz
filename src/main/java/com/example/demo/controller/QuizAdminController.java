@@ -18,7 +18,6 @@ import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.QuestionRepository;
 import com.example.demo.repository.QuizSetRepository;
 import com.example.demo.service.QuizAdminService;
-
 @Controller
 @RequestMapping("/quiz/admin")
 public class QuizAdminController {
@@ -206,7 +205,7 @@ public class QuizAdminController {
 			if (categoryId != null && quizSetId != null) {
 
 				questions = questionRepository
-						.findByQuizSetCategoryIdAndQuizSetIdAndQuestionTextContainingIgnoreCase(
+						.findByQuizSetCategoryIdAndQuizSetIdAndQuestionTextContainingIgnoreCaseOrderByQuestionOrderAsc(
 								categoryId,
 								quizSetId,
 								keyword);
@@ -214,21 +213,22 @@ public class QuizAdminController {
 			} else if (categoryId != null) {
 
 				questions = questionRepository
-						.findByQuizSetCategoryIdAndQuestionTextContainingIgnoreCase(
+						.findByQuizSetCategoryIdAndQuestionTextContainingIgnoreCaseOrderByQuestionOrderAsc(
 								categoryId,
 								keyword);
 
 			} else if (quizSetId != null) {
 
 				questions = questionRepository
-						.findByQuizSetIdAndQuestionTextContainingIgnoreCase(
+						.findByQuizSetIdAndQuestionTextContainingIgnoreCaseOrderByQuestionOrderAsc(
 								quizSetId,
 								keyword);
 
 			} else {
 
 				questions = questionRepository
-						.findByQuestionTextContainingIgnoreCase(keyword);
+						.findByQuestionTextContainingIgnoreCaseOrderByQuestionOrderAsc(
+								keyword);
 			}
 
 		} else {
@@ -236,25 +236,28 @@ public class QuizAdminController {
 			if (categoryId != null && quizSetId != null) {
 
 				questions = questionRepository
-						.findByQuizSetCategoryIdAndQuizSetId(
+						.findByQuizSetCategoryIdAndQuizSetIdOrderByQuestionOrderAsc(
 								categoryId,
 								quizSetId);
 
 			} else if (categoryId != null) {
 
 				questions = questionRepository
-						.findByQuizSetCategoryId(categoryId);
+						.findByQuizSetCategoryIdOrderByQuestionOrderAsc(
+								categoryId);
 
 			} else if (quizSetId != null) {
 
 				questions = questionRepository
-						.findByQuizSetId(quizSetId);
+						.findByQuizSetIdOrderByQuestionOrderAsc(
+								quizSetId);
 
 			} else {
-
-				questions = questionRepository.findAll();
+				questions = questionRepository
+						.findAllByOrderByQuestionOrderAsc();
 			}
 		}
+			
 
 		// カテゴリ
 		model.addAttribute(
@@ -326,5 +329,44 @@ public class QuizAdminController {
 
 		return "redirect:/quiz/admin/question";
 	}
+	
+	@PostMapping("/question/order")
+	public String updateQuestionOrder(
+	        @RequestParam Integer quizSetId,
+	        @RequestParam List<Integer> questionIds,
+	        @RequestParam List<Integer> questionOrders,
+	        Model model) {
 
+	    try {
+	        quizAdminService.updateQuestionOrder(
+	                quizSetId,
+	                questionIds,
+	                questionOrders);
+
+	        return "redirect:/quiz/admin/question?quizSetId=" + quizSetId;
+
+	    } catch (IllegalArgumentException e) {
+
+	        model.addAttribute("errorMessage", e.getMessage());
+
+	        // エラー時に一覧を再表示するためのデータ
+	        model.addAttribute(
+	                "questions",
+	                questionRepository.findByQuizSetId(quizSetId));
+
+	        model.addAttribute(
+	                "categories",
+	                categoryRepository.findAll());
+
+	        model.addAttribute(
+	                "quizSets",
+	                quizSetRepository.findAll());
+
+	        model.addAttribute(
+	                "selectedQuizSetId",
+	                quizSetId);
+
+	        return "admin/question-list";
+	    }
+	}
 }
