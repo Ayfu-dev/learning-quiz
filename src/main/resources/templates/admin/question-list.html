@@ -110,10 +110,8 @@
 	</div>
 
 
-	<!--
-		並び順保存用フォーム
-		テーブルの外に置くことでフォームの入れ子を防ぐ
-	-->
+	<!--並び順保存用フォーム
+		テーブルの外に置くことでフォームの入れ子を防ぐ-->
 	<form id="question-order-form"
 		  th:if="${selectedQuizSetId != null}"
 		  th:action="@{/quiz/admin/question/order}"
@@ -128,11 +126,8 @@
 
 	<!-- 問題一覧 -->
 	<table class="question-table">
-
 		<thead>
-
 			<tr>
-
 				<th class="order-column">
 					順番
 				</th>
@@ -148,16 +143,11 @@
 				<th class="action-column">
 					操作
 				</th>
-
 			</tr>
-
 		</thead>
 
-
 		<tbody>
-
 			<tr th:each="question : ${questions}">
-
 				<!-- 並び順 -->
 				<td class="order-column">
 
@@ -175,7 +165,6 @@
 						   form="question-order-form">
 
 				</td>
-
 
 				<!-- クイズセット -->
 				<td class="quiz-set-column"

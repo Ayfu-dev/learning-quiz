@@ -34,11 +34,16 @@ public class QuizSet {
     @Column(name = "quiz_set_order", nullable = false)
     private Integer quizSetOrder;
 
+    public void updateOrder(Integer quizSetOrder) {
+        this.quizSetOrder = quizSetOrder;
+    }
+    
     protected QuizSet() {}
 
-    public QuizSet(Category category, String title) {
+    public QuizSet(Category category, String title, Integer quizSetOrder) {
         this.category = category;
         this.title = title;
+        this.quizSetOrder = quizSetOrder;
     }
     
     public void update(
@@ -67,5 +72,9 @@ public class QuizSet {
     
     public Integer getQuizSetOrder() {
         return quizSetOrder;
+    }
+    
+    public Integer setQuizSetOrder() {
+    	return quizSetOrder;
     }
 }

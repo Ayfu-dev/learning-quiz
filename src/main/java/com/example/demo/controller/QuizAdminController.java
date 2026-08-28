@@ -18,6 +18,7 @@ import com.example.demo.repository.CategoryRepository;
 import com.example.demo.repository.QuestionRepository;
 import com.example.demo.repository.QuizSetRepository;
 import com.example.demo.service.QuizAdminService;
+
 @Controller
 @RequestMapping("/quiz/admin")
 public class QuizAdminController {
@@ -26,19 +27,18 @@ public class QuizAdminController {
 	private final QuizSetRepository quizSetRepository;
 	private final QuestionRepository questionRepository;
 	private final CategoryRepository categoryRepository;
-	
+
 	//パスワード設定 application.properties
 	@Value("${admin.password}")
 	private String adminPassword;
-	
+
 	private boolean isAuthenticated(HttpSession session) {
 
-		Boolean authenticated =
-				(Boolean) session.getAttribute("adminAuthenticated");
+		Boolean authenticated = (Boolean) session.getAttribute("adminAuthenticated");
 
 		return Boolean.TRUE.equals(authenticated);
 	}
-	
+
 	public QuizAdminController(
 			QuizAdminService quizAdminService,
 			QuizSetRepository quizSetRepository,
@@ -50,12 +50,11 @@ public class QuizAdminController {
 		this.questionRepository = questionRepository;
 		this.categoryRepository = categoryRepository;
 	}
-	
+
 	@GetMapping
 	public String showAdmin(HttpSession session) {
 
-		Boolean authenticated =
-				(Boolean) session.getAttribute("adminAuthenticated");
+		Boolean authenticated = (Boolean) session.getAttribute("adminAuthenticated");
 
 		if (!Boolean.TRUE.equals(authenticated)) {
 			return "redirect:/quiz/admin/login";
@@ -68,13 +67,13 @@ public class QuizAdminController {
 	public String showLogin() {
 		return "admin/login";
 	}
-	
+
 	@PostMapping("/login")
 	public String login(
 			@RequestParam String password,
 			HttpSession session,
 			Model model) {
-		
+
 		if (adminPassword.equals(password)) {
 
 			session.setAttribute("adminAuthenticated", true);
@@ -86,13 +85,35 @@ public class QuizAdminController {
 
 		return "admin/login";
 	}
-	
+
 	@GetMapping("/quiz_set")
-	public String showQuizSetList(Model model) {
+	public String showQuizSetList(
+			@RequestParam(required = false) Integer categoryId,
+			Model model) {
+
+		List<QuizSet> quizSets;
+
+		if (categoryId != null) {
+			quizSets = quizSetRepository
+					.findByCategoryOrderByQuizSetOrder(
+							categoryRepository.findById(categoryId)
+									.orElseThrow());
+		} else {
+			quizSets = quizSetRepository
+					.findAll();
+		}
+
+		model.addAttribute(
+				"categories",
+				categoryRepository.findAll());
 
 		model.addAttribute(
 				"quizSets",
-				quizSetRepository.findAll());
+				quizSets);
+
+		model.addAttribute(
+				"selectedCategoryId",
+				categoryId);
 
 		return "admin/quiz-set-list";
 	}
@@ -111,7 +132,7 @@ public class QuizAdminController {
 	public String addQuizSet(
 			@RequestParam Integer categoryId,
 			@RequestParam String title) {
-		
+
 		quizAdminService.addQuizSet(
 				categoryId,
 				title);
@@ -158,11 +179,62 @@ public class QuizAdminController {
 		return "redirect:/quiz/admin/quiz_set";
 	}
 
+	@PostMapping("/quiz_set/order")
+	public String updateQuizSetOrder(
+			@RequestParam List<Integer> quizSetIds,
+			@RequestParam List<Integer> quizSetOrders,
+			@RequestParam(required = false) Integer categoryId,
+			Model model) {
+
+		try {
+			quizAdminService.updateQuizSetOrder(
+			        categoryId,
+			        quizSetIds,
+			        quizSetOrders);
+
+			// 保存後も選択していたカテゴリを維持
+			if (categoryId != null) {
+				return "redirect:/quiz/admin/quiz_set?categoryId=" + categoryId;
+			}
+
+			return "redirect:/quiz/admin/quiz_set";
+
+		} catch (IllegalArgumentException e) {
+
+			model.addAttribute("errorMessage", e.getMessage());
+
+			// エラー時に一覧を再表示するためのデータ
+			List<QuizSet> quizSets;
+
+			if (categoryId != null) {
+				quizSets = quizSetRepository
+						.findByCategoryIdOrderByQuizSetOrderAsc(categoryId);
+			} else {
+				quizSets = quizSetRepository
+						.findAllByOrderByQuizSetOrderAsc();
+			}
+
+			model.addAttribute(
+					"quizSets",
+					quizSets);
+
+			model.addAttribute(
+					"categories",
+					categoryRepository.findAll());
+
+			model.addAttribute(
+					"selectedCategoryId",
+					categoryId);
+
+			return "admin/quiz-set-list";
+		}
+	}
+
 	//  以降問題管理
 	//  問題追加
 	@GetMapping("/question/add")
 	public String showQuestionAdd(Model model) {
-		
+
 		model.addAttribute(
 				"quizSets",
 				quizSetRepository.findAll());
@@ -257,7 +329,6 @@ public class QuizAdminController {
 						.findAllByOrderByQuestionOrderAsc();
 			}
 		}
-			
 
 		// カテゴリ
 		model.addAttribute(
@@ -329,44 +400,44 @@ public class QuizAdminController {
 
 		return "redirect:/quiz/admin/question";
 	}
-	
+
 	@PostMapping("/question/order")
 	public String updateQuestionOrder(
-	        @RequestParam Integer quizSetId,
-	        @RequestParam List<Integer> questionIds,
-	        @RequestParam List<Integer> questionOrders,
-	        Model model) {
+			@RequestParam Integer quizSetId,
+			@RequestParam List<Integer> questionIds,
+			@RequestParam List<Integer> questionOrders,
+			Model model) {
 
-	    try {
-	        quizAdminService.updateQuestionOrder(
-	                quizSetId,
-	                questionIds,
-	                questionOrders);
+		try {
+			quizAdminService.updateQuestionOrder(
+					quizSetId,
+					questionIds,
+					questionOrders);
 
-	        return "redirect:/quiz/admin/question?quizSetId=" + quizSetId;
+			return "redirect:/quiz/admin/question?quizSetId=" + quizSetId;
 
-	    } catch (IllegalArgumentException e) {
+		} catch (IllegalArgumentException e) {
 
-	        model.addAttribute("errorMessage", e.getMessage());
+			model.addAttribute("errorMessage", e.getMessage());
 
-	        // エラー時に一覧を再表示するためのデータ
-	        model.addAttribute(
-	                "questions",
-	                questionRepository.findByQuizSetId(quizSetId));
+			// エラー時に一覧を再表示するためのデータ
+			model.addAttribute(
+					"questions",
+					questionRepository.findByQuizSetId(quizSetId));
 
-	        model.addAttribute(
-	                "categories",
-	                categoryRepository.findAll());
+			model.addAttribute(
+					"categories",
+					categoryRepository.findAll());
 
-	        model.addAttribute(
-	                "quizSets",
-	                quizSetRepository.findAll());
+			model.addAttribute(
+					"quizSets",
+					quizSetRepository.findAll());
 
-	        model.addAttribute(
-	                "selectedQuizSetId",
-	                quizSetId);
+			model.addAttribute(
+					"selectedQuizSetId",
+					quizSetId);
 
-	        return "admin/question-list";
-	    }
+			return "admin/question-list";
+		}
 	}
 }

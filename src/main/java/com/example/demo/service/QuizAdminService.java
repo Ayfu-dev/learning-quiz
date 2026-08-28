@@ -111,6 +111,7 @@ public class QuizAdminService {
 
 	}
 
+	//問題削除
 	@Transactional
 	public void deleteQuestion(Integer id) {
 
@@ -147,9 +148,13 @@ public class QuizAdminService {
 				.orElseThrow(() -> new IllegalArgumentException(
 						"存在しないカテゴリ: " + categoryId));
 
+		Integer maxSetOrder = quizSetRepository.findMaxQuizSetOrder(category);
+		Integer quizSetOrder = maxSetOrder + 1;
+
 		QuizSet quizSet = new QuizSet(
 				category,
-				title);
+				title,
+				quizSetOrder);
 
 		quizSetRepository.save(quizSet);
 	}
@@ -176,6 +181,7 @@ public class QuizAdminService {
 		quizSetRepository.save(quizSet);
 	}
 
+	// 章削除
 	@Transactional
 	public void deleteQuizSet(Integer id) {
 
@@ -183,8 +189,13 @@ public class QuizAdminService {
 				.orElseThrow(() -> new IllegalArgumentException(
 						"存在しないクイズセット: " + id));
 
+		// 削除対象のカテゴリと章順を取得
+		Category category = quizSet.getCategory();
+		Integer quizSetOrder = quizSet.getQuizSetOrder();
+
 		// クイズセットに属する問題を取得
 		List<Question> questions = questionRepository.findByQuizSet(quizSet);
+
 		// 問題と選択肢を削除
 		for (Question question : questions) {
 
@@ -199,6 +210,11 @@ public class QuizAdminService {
 
 		// クイズセットを削除
 		quizSetRepository.delete(quizSet);
+
+		// 後ろの章の順番を1つ前に詰める
+		quizSetRepository.decrementQuizSetOrder(
+				category,
+				quizSetOrder);
 	}
 
 	@Transactional
@@ -264,5 +280,75 @@ public class QuizAdminService {
 
 			question.setQuestionOrder(questionOrder);
 		}
+	}
+
+	// クイズセットの並び順変更
+	@Transactional
+	public void updateQuizSetOrder(
+	        Integer categoryId,
+	        List<Integer> quizSetIds,
+	        List<Integer> quizSetOrders) {
+
+	    Category category = categoryRepository.findById(categoryId)
+	            .orElseThrow(() -> new IllegalArgumentException(
+	                    "存在しないカテゴリ: " + categoryId));
+
+	    List<QuizSet> quizSets =
+	            quizSetRepository.findByCategoryOrderByQuizSetOrder(category);
+
+	    int quizSetCount = quizSets.size();
+
+	    // 件数と入力数が一致するか
+	    if (quizSetIds.size() != quizSetCount
+	            || quizSetOrders.size() != quizSetCount) {
+
+	        throw new IllegalArgumentException(
+	                "クイズセットの並び順を正しく入力してください。");
+	    }
+
+	    // 1～Nの範囲か確認
+	    boolean[] used = new boolean[quizSetCount + 1];
+
+	    for (Integer order : quizSetOrders) {
+
+	        if (order == null
+	                || order < 1
+	                || order > quizSetCount) {
+
+	            throw new IllegalArgumentException(
+	                    "順番は1～" + quizSetCount
+	                            + "の範囲で入力してください。");
+	        }
+
+	        // 重複チェック
+	        if (used[order]) {
+
+	            throw new IllegalArgumentException(
+	                    "同じ順番が重複しています。");
+	        }
+
+	        used[order] = true;
+	    }
+
+	    // クイズセットの順番を更新
+	    for (int i = 0; i < quizSetIds.size(); i++) {
+
+	        Integer quizSetId = quizSetIds.get(i);
+	        Integer quizSetOrder = quizSetOrders.get(i);
+
+	        QuizSet quizSet = quizSetRepository
+	                .findById(quizSetId)
+	                .orElseThrow(() -> new IllegalArgumentException(
+	                        "存在しないクイズセット: " + quizSetId));
+
+	        // 別のカテゴリのクイズセットを変更できないようにする
+	        if (!quizSet.getCategory().getId().equals(categoryId)) {
+
+	            throw new IllegalArgumentException(
+	                    "指定されたクイズセットがカテゴリと一致しません。");
+	        }
+
+	        quizSet.updateOrder(quizSetOrder);
+	    }
 	}
 }

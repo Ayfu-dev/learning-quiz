@@ -35,7 +35,6 @@
 	margin-top: 10px;
 }
 
-
 .container {
 	width: 800px;
 	margin: auto;
@@ -96,6 +95,7 @@
 	font-size: 15px;
 	font-weight: bold;
 }
+
 .question-button:hover {
 	background: #f3f8ff;
 	border-color: #6795fd;
@@ -160,37 +160,27 @@ body {
 	margin-top: 80px;
 }
 
-
 h1 {
 	text-align: center;
 	margin-top: 0;
 }
-
-
 
 /* 通常ボタン */
 .button {
 	display: inline-block;
 	padding: 0.6em 1.2em;
 	box-sizing: border-box;
-
 	text-decoration: none;
 	text-align: center;
-
 	border-radius: 4px;
-
 	color: #ffffff;
 	background-image: linear-gradient(#6795fd 0%, #67ceff 100%);
-
 	box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.29);
-
 	border: none;
 	border-bottom: solid 3px #5e7fca;
-
 	font-family: inherit;
 	font-size: 15px;
 	font-weight: bold;
-
 	cursor: pointer;
 }
 
@@ -210,24 +200,17 @@ h1 {
 	display: inline-block;
 	padding: 0.5em 1em;
 	box-sizing: border-box;
-
 	text-decoration: none;
 	text-align: center;
-
 	border-radius: 4px;
-
 	color: #ffffff;
 	background-image: linear-gradient(#6795fd 0%, #67ceff 100%);
-
 	box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.29);
-
 	border: none;
 	border-bottom: solid 3px #5e7fca;
-
 	font-family: inherit;
 	font-size: 14px;
 	font-weight: bold;
-
 	cursor: pointer;
 }
 
@@ -240,7 +223,6 @@ h1 {
 	box-shadow: none;
 	border-bottom: solid 1px #5e7fca;
 }
-
 
 /* 削除ボタン */
 .delete-button {
@@ -274,7 +256,6 @@ hr {
 }
 
 /* 管理画面：問題入力フォーム */
-
 /* =========================
    問題登録・編集フォーム
    ========================= */
@@ -389,7 +370,6 @@ hr {
 }
 
 /* 上部ボタン */
-
 .list-header {
 	display: flex;
 	gap: 10px;
@@ -397,7 +377,6 @@ hr {
 }
 
 /* 検索エリア */
-
 .question-filter {
 	display: flex;
 	align-items: flex-end;
@@ -451,7 +430,6 @@ hr {
 }
 
 /* 件数 */
-
 .question-count {
 	margin: 15px 0 8px;
 	font-size: 14px;
@@ -460,7 +438,6 @@ hr {
 }
 
 /* 問題一覧テーブル */
-
 .question-table {
 	width: 100%;
 	border-collapse: collapse;
@@ -472,7 +449,6 @@ hr {
 }
 
 /* ヘッダー */
-
 .question-table th {
 	padding: 14px 12px;
 	background: #f0f4f8;
@@ -482,7 +458,6 @@ hr {
 }
 
 /* セル */
-
 .question-table td {
 	padding: 14px 12px;
 	border-bottom: 1px solid #ddd;
@@ -490,7 +465,6 @@ hr {
 }
 
 /* 最後の行 */
-
 .question-table tbody tr:last-child td {
 	border-bottom: none;
 }
@@ -521,14 +495,12 @@ hr {
 }
 
 /* 問題文 */
-
 .question-table .question-column {
 	line-height: 1.6;
 	word-break: break-word;
 }
 
 /* 操作 */
-
 .question-table .action-column .small-button {
 	margin: 2px;
 }
@@ -538,7 +510,6 @@ hr {
 }
 
 /* 検索結果なし */
-
 .question-table .no-result {
 	padding: 40px 20px;
 	text-align: center;
@@ -564,10 +535,92 @@ hr {
 }
 
 /* 下部ボタン */
-
 .list-footer {
 	margin-top: 25px;
 	text-align: center;
+}
+
+/* =========================
+   クイズセット一覧
+   ========================= */
+.quiz-set-list-container {
+	width: 90%;
+	max-width: 1200px;
+}
+
+/* カテゴリ絞り込み */
+
+.quiz-set-filter {
+	display: flex;
+	align-items: flex-end;
+	gap: 15px;
+	margin-bottom: 15px;
+	padding: 20px;
+	background: #ffffff;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+}
+
+/* クイズセット一覧テーブル */
+.quiz-set-table {
+	width: 100%;
+	border-collapse: collapse;
+	background: #ffffff;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	overflow: hidden;
+	table-layout: fixed;
+}
+
+/* ヘッダー */
+.quiz-set-table th {
+	padding: 14px 12px;
+	background: #f0f4f8;
+	border-bottom: 2px solid #ccc;
+	font-size: 14px;
+	text-align: left;
+}
+
+/* セル */
+.quiz-set-table td {
+	padding: 14px 12px;
+	border-bottom: 1px solid #ddd;
+	vertical-align: middle;
+}
+
+/* 最後の行 */
+.quiz-set-table tbody tr:last-child td {
+	border-bottom: none;
+}
+
+/* 行のホバー */
+.quiz-set-table tbody tr:hover {
+	background-color: #f8fbff;
+}
+
+/* 列幅 */
+.quiz-set-table .order-column {
+	width: 70px;
+	text-align: center;
+}
+
+.quiz-set-table .category-column {
+	width: 18%;
+}
+
+.quiz-set-table .title-column {
+	width: auto;
+}
+
+.quiz-set-table .action-column {
+	width: 150px;
+	text-align: center;
+	white-space: nowrap;
+}
+
+/* 操作 */
+.quiz-set-table .action-column .small-button {
+	margin: 2px;
 }
 
 /* =========================
@@ -622,19 +675,16 @@ hr {
 }
 
 /* 最後の行 */
-
 .quiz-set-table tbody tr:last-child td {
 	border-bottom: none;
 }
 
 /* 行のホバー */
-
 .quiz-set-table tbody tr:hover {
 	background-color: #f8fbff;
 }
 
 /* 列幅 */
-
 .quiz-set-table .category-column {
 	width: 20%;
 }
@@ -650,7 +700,6 @@ hr {
 }
 
 /* 操作 */
-
 .quiz-set-table .action-column .small-button {
 	margin: 2px;
 }
