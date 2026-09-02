@@ -181,10 +181,10 @@ public class QuizAdminController {
 
 	@PostMapping("/quiz_set/order")
 	public String updateQuizSetOrder(
-			@RequestParam List<Integer> quizSetIds,
-			@RequestParam List<Integer> quizSetOrders,
-			@RequestParam(required = false) Integer categoryId,
-			Model model) {
+	        @RequestParam Integer categoryId,
+	        @RequestParam List<Integer> quizSetIds,
+	        @RequestParam List<Integer> quizSetOrders,
+	        Model model) {
 
 		try {
 			quizAdminService.updateQuizSetOrder(

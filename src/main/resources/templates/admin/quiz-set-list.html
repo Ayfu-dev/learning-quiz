@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -9,12 +8,11 @@
 </head>
 
 <body>
-
 	<div class="container quiz-set-list-container">
 		<h1>クイズセット一覧</h1>
-
 		<!-- 上部ボタン -->
 		<div class="list-header">
+
 			<a th:href="@{/quiz/admin/quiz_set/add}" class="button">
 				クイズセットを追加
 			</a>
@@ -24,7 +22,6 @@
 			</a>
 		</div>
 
-
 		<!-- カテゴリ絞り込み -->
 		<div class="quiz-set-filter">
 			<div class="filter-item">
@@ -33,7 +30,6 @@
 				</label>
 
 				<select id="categoryId" name="categoryId" form="quiz-set-search-form">
-
 					<option value="">
 						すべて
 					</option>
@@ -46,7 +42,6 @@
 
 			<div class="filter-action">
 				<form id="quiz-set-search-form" th:action="@{/quiz/admin/quiz_set}" method="get">
-
 					<button type="submit" class="button">
 						絞り込み
 					</button>
@@ -61,15 +56,7 @@
 
 		<!-- 並び順保存用フォーム -->
 		<form id="quiz-set-order-form" th:action="@{/quiz/admin/quiz_set/order}" method="post">
-
-			<!-- 並び順を保存する対象のIDと順番 -->
-			<div th:each="quizSet : ${quizSets}">
-
-				<input type="hidden" name="quizSetIds" th:value="${quizSet.id}">
-
-				<input type="hidden" name="quizSetOrders" th:value="${quizSet.quizSetOrder}"
-					th:id="'order-hidden-' + ${quizSet.id}">
-			</div>
+			<input type="hidden" name="categoryId" th:value="${selectedCategoryId}">
 		</form>
 
 		<!-- クイズセット一覧 -->
@@ -91,17 +78,17 @@
 					<th class="action-column">
 						操作
 					</th>
-
 				</tr>
 			</thead>
+
 			<tbody>
 				<tr th:each="quizSet : ${quizSets}">
-
 					<!-- 順番 -->
 					<td class="order-column">
+						<input type="hidden" name="quizSetIds" th:value="${quizSet.id}" form="quiz-set-order-form">
 
-						<input type="number" min="1" class="order-input" th:value="${quizSet.quizSetOrder}"
-							th:onchange="'document.getElementById(\\'order-hidden-' + ${quizSet.id} + '\\').value = this.value'">
+						<input type="number" name="quizSetOrders" min="1" class="order-input"
+							th:value="${quizSet.quizSetOrder}" form="quiz-set-order-form">
 					</td>
 
 					<!-- カテゴリ -->
@@ -132,7 +119,6 @@
 				</tr>
 
 				<tr th:if="${quizSets.isEmpty()}">
-
 					<td colspan="4" class="no-result">
 						クイズセットがありません。
 					</td>
@@ -142,18 +128,22 @@
 
 		<!-- 並び順保存 -->
 		<div th:if="${selectedCategoryId != null}" class="order-save-area">
+
 			<button type="submit" form="quiz-set-order-form" class="button">
+
 				並び順を保存
+
 			</button>
 		</div>
 
 		<!-- 下部ボタン -->
 		<div class="list-footer">
 			<a th:href="@{/quiz/admin}" class="small-button">
-				管理画面へ戻る
+			管理画面へ戻る
 			</a>
 		</div>
 	</div>
+
 </body>
 
 </html>
