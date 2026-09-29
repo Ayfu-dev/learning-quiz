@@ -14,6 +14,15 @@
 		<p class="sub-title">
 			学習する問題セットを選択してください
 		</p>
+		
+		<div class="button-area">
+		    <button class="button"
+		            th:attr="data-url=@{'/quiz/' + ${category} + '/comprehensive'}"
+		            onclick="location.href=this.dataset.url">
+		        総合テスト
+		    </button>
+		</div>
+		
 		<div class="question-card quiz-set-card" th:each="set, idx : ${quizSets}">
 			<h2 th:text="${set.title}"></h2>
 			<p>

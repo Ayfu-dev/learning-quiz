@@ -703,3 +703,67 @@ hr {
 .quiz-set-table .action-column .small-button {
 	margin: 2px;
 }
+
+/* 総合テスト：簡易選択 */
+.comprehensive-simple {
+margin-bottom: 20px;
+}
+
+.comprehensive-simple-title,
+.comprehensive-detail-title {
+font-weight: bold;
+margin-bottom: 8px;
+}
+
+.comprehensive-simple-list {
+display: flex;
+flex-wrap: wrap;
+gap: 6px;
+}
+
+.comprehensive-simple-item {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+min-width: 42px;
+padding: 6px 8px;
+border: 1px solid #ccc;
+border-radius: 4px;
+cursor: pointer;
+}
+
+.comprehensive-simple-item input {
+margin-right: 4px;
+}
+
+/* 総合テスト：詳細選択 */
+.comprehensive-detail {
+margin-top: 10px;
+}
+
+.comprehensive-set {
+border-bottom: 1px solid #ddd;
+padding: 8px 4px;
+}
+
+.comprehensive-set label {
+display: flex;
+align-items: center;
+width: 100%;
+cursor: pointer;
+}
+
+.comprehensive-set-number {
+width: 35px;
+margin-left: 8px;
+}
+
+.comprehensive-set-title {
+flex: 1;
+}
+
+.comprehensive-set-count {
+width: 50px;
+text-align: right;
+white-space: nowrap;
+}

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>総合テスト</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+	<div class="container">
+
+		<h1 th:text="${category.toUpperCase()} + ' 総合テスト'"></h1>
+
+		<p class="sub-title">
+			出題範囲を選択してください
+		</p>
+		
+		<p th:if="${error}" class="error-message" th:text="${error}"> </p>
+		
+		<form th:action="@{/quiz/{c}/comprehensive(c=${category})}" method="post">
+			<!-- 簡易選択 -->
+			<div class="comprehensive-simple">
+				<div class="comprehensive-simple-title">
+					出題セット
+				</div>
+
+				<div class="comprehensive-simple-list">
+					<span th:each="set, idx : ${quizSets}">
+						<label class="comprehensive-simple-item">
+							<input type="checkbox" name="quizSet" th:value="${idx.index}"
+								th:attr="data-question-count=${set.questions.size()}">
+							<span th:text="${idx.index + 1}"></span>
+						</label>
+					</span>
+				</div>
+
+				<div class="button-area">
+					<button type="button" class="small-button" onclick="selectAllQuizSets()">
+						すべて選択
+					</button>
+
+					<button type="button" class="small-button" onclick="clearAllQuizSets()">
+						すべて解除
+					</button>
+				</div>
+			</div>
+
+
+			<!-- 詳細選択 -->
+			<div class="comprehensive-detail">
+
+				<div class="comprehensive-detail-title">
+					詳細
+				</div>
+
+				<div class="comprehensive-set" th:each="set, idx : ${quizSets}">
+
+					<label>
+						<input type="checkbox" name="quizSet" th:value="${idx.index}"
+							th:attr="data-question-count=${set.questions.size()}">
+
+						<span class="comprehensive-set-number" th:text="${idx.index + 1}">
+						</span>
+
+						<span class="comprehensive-set-title" th:text="${set.title}">
+						</span>
+
+						<span class="comprehensive-set-count">
+							<span th:text="${set.questions.size()}"></span>問
+						</span>
+					</label>
+
+				</div>
+
+			</div>
+
+			<div class="comprehensive-count">
+
+				<label for="questionCount">出題数：</label>
+
+				<input type="number" id="questionCount" name="questionCount" value="20" min="1" required>
+				問
+				<span>
+					（選択中：<span id="selectedQuestionCount">0</span>問）
+				</span>
+
+			</div>
+
+			<p id="questionCountError" class="error-message" style="display: none;">
+			</p>
+
+			<br>
+			
+			<button type="submit" id="startButton" class="button">
+				総合テスト開始
+			</button>
+
+		</form>
+
+		<div class="button-area">
+			<a th:href="@{/quiz/{c}/list(c=${category})}" class="small-button">
+				問題選択に戻る
+			</a>
+		</div>
+
+		<script>
+
+			// すべてのチェックボックスを取得
+			function getQuizSetCheckboxes() {
+				return document.querySelectorAll('input[name="quizSet"]');
+			}
+
+			// 指定された番号のチェック状態をすべて同期
+			function syncQuizSet(index, checked) {
+				getQuizSetCheckboxes().forEach(function (checkbox) {
+					if (checkbox.value === index) {
+						checkbox.checked = checked;
+					}
+				});
+			}
+
+			// 選択中の問題数を計算
+			function updateQuestionCount() {
+			    let total = 0;
+			    // 同じQuizSetを簡易版・詳細版の両方から
+			    // 2回カウントしないためのSet
+			    const countedQuizSets = new Set();
+
+			    getQuizSetCheckboxes().forEach(function(checkbox) {
+			        if (checkbox.checked && !countedQuizSets.has(checkbox.value)) {
+			            total += Number(checkbox.dataset.questionCount);
+			            countedQuizSets.add(checkbox.value);
+			        }
+			    });
+			    document.getElementById("selectedQuestionCount").textContent = total;
+			    validateQuestionCount(total);
+			}
+
+			// 出題数をチェック
+			function validateQuestionCount(selectedQuestionCount) {
+
+				const questionCountInput =
+					document.getElementById("questionCount");
+
+				const startButton =
+					document.getElementById("startButton");
+
+				const errorMessage =
+					document.getElementById("questionCountError");
+
+				const questionCount =
+					Number(questionCountInput.value);
+
+				// 出題範囲が未選択
+				if (selectedQuestionCount === 0) {
+					startButton.disabled = true;
+					errorMessage.style.display = "none";
+					return;
+				}
+
+				// 出題数が選択した問題数を超えている
+				if (questionCount > selectedQuestionCount) {
+					startButton.disabled = true;
+					errorMessage.textContent =
+						"出題数が選択した問題数を超えています";
+					errorMessage.style.display = "block";
+				}
+
+				// 出題数が0以下
+				else if (questionCount <= 0) {
+					startButton.disabled = true;
+					errorMessage.textContent =
+						"出題数は1問以上にしてください";
+					errorMessage.style.display = "block";
+				}
+
+				// 問題なし
+				else {
+					startButton.disabled = false;
+					errorMessage.style.display = "none";
+				}
+			}
+
+			// チェック状態が変更されたら、
+			// 簡易版・詳細版を同期して問題数を再計算
+			getQuizSetCheckboxes().forEach(function (checkbox) {
+				checkbox.addEventListener('change', function () {
+					syncQuizSet(this.value, this.checked);
+					updateQuestionCount();
+				});
+			});
+
+			// すべて選択
+			function selectAllQuizSets() {
+				getQuizSetCheckboxes().forEach(function (checkbox) {
+					checkbox.checked = true;
+				});
+				updateQuestionCount();
+			}
+
+			// すべて解除
+			function clearAllQuizSets() {
+				getQuizSetCheckboxes().forEach(function (checkbox) {
+					checkbox.checked = false;
+				});
+				updateQuestionCount();
+			}
+
+
+			// 出題数が変更されたらチェック
+			document.getElementById("questionCount")
+				.addEventListener("input", function () {
+					updateQuestionCount();
+				});
+			// ページ表示時に初期状態をチェック
+			updateQuestionCount();
+
+		</script>
+
+</body>
+
+</html>

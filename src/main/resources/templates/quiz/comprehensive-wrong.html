@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>間違えた問題</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+	<div class="container">
+
+		<h1 th:text="${category.toUpperCase()} + ' 間違えた問題'"></h1>
+
+		<p class="sub-title">
+			今回間違えた問題を確認できます
+		</p>
+
+		<div th:if="${wrongIndexes.isEmpty()}" class="question-card">
+
+			<h2>全問正解です！</h2>
+
+		</div>
+
+		<div th:unless="${wrongIndexes.isEmpty()}">
+
+			<div class="comprehensive-result-item" th:each="questionIndex : ${wrongIndexes}">
+
+				<div class="comprehensive-result-number">
+					問題
+					<span th:text="${questionIndex + 1}"></span>
+				</div>
+
+				<div class="comprehensive-result-question" th:text="${questions.get(questionIndex).questionText}">
+				</div>
+
+				<div class="comprehensive-result-button">
+
+					<a th:href="@{/quiz/{c}/comprehensive/review/{i}
+                             (c=${category}, i=${questionIndex})}" class="small-button">
+						問題を確認
+					</a>
+
+				</div>
+			</div>
+		</div>
+
+		<div class="button-area">
+
+			<a th:href="@{/quiz/{c}/comprehensive/result(c=${category})}" class="button">
+				結果一覧に戻る
+			</a>
+
+		</div>
+	</div>
+
+</body>
+
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>総合テスト</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+	<div class="container">
+
+		<h1 th:text="${category.toUpperCase()} + ' 総合テスト'"></h1>
+
+		<p class="sub-title">
+			問題
+			<span th:text="${questionIndex + 1}"></span>
+			/
+			<span th:text="${total}"></span>
+		</p>
+
+		<div class="question-card">
+
+			<h2 th:text="${question.questionText}"></h2>
+
+			<form th:action="@{/quiz/{c}/comprehensive/{i}
+                         (c=${category}, i=${questionIndex})}" method="post">
+
+				<div th:each="choice, idx : ${question.choices}">
+					<label>
+						<input type="radio" name="answer" th:value="${idx.index}">
+						<span th:text="${choice}"></span>
+					</label>
+				</div>
+
+				<div class="button-area">
+					<button type="submit" class="button">
+						回答する
+					</button>
+				</div>
+
+			</form>
+
+		</div>
+
+	</div>
+
+</body>
+
+</html>

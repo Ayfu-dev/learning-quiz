@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>総合テスト結果</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+	<div class="container">
+
+		<h1 th:text="${category.toUpperCase()} + ' 総合テスト結果'"></h1>
+
+		<!-- 得点 -->
+		<div class="question-card comprehensive-result-summary">
+
+			<h2>
+				<span th:text="${score}"></span>
+				/
+				<span th:text="${total}"></span>
+				問
+			</h2>
+
+			<p>
+				正答率：
+				<span th:text="${score * 100 / total}"></span>%
+			</p>
+
+		</div>
+
+		<!-- 操作 -->
+		<div class="button-area">
+
+			<a th:href="@{/quiz/{c}/comprehensive/wrong(c=${category})}" class="button">
+				間違えた問題だけ確認
+			</a>
+
+		</div>
+
+		<div class="button-area">
+
+			<form th:action="@{/quiz/{c}/comprehensive/retry(c=${category})}" method="post">
+
+				<button type="submit" class="button">
+					同じ範囲でもう一度
+				</button>
+
+			</form>
+		</div>
+
+		<div class="button-area">
+
+			<a th:href="@{/quiz/{c}/comprehensive(c=${category})}" class="button">
+				出題範囲を変更
+			</a>
+
+		</div>
+		
+		<!-- 各問題の正誤一覧 -->
+		<h2>問題別結果</h2>
+
+		<div class="comprehensive-result-list">
+
+			<div class="comprehensive-result-item" th:each="question, idx : ${questions}">
+
+				<div class="comprehensive-result-number">
+					問題 <span th:text="${idx.index + 1}"></span>
+				</div>
+
+				<div class="comprehensive-result-question" th:text="${question.questionText}">
+				</div>
+
+				<div class="comprehensive-result-status">
+
+					<span th:if="${idx.index < userAnswers.size()
+                             and userAnswers.get(idx.index) != null
+                             and question.answerIndex == userAnswers.get(idx.index)}" class="correct">
+						正解
+					</span>
+
+					<span th:unless="${idx.index < userAnswers.size()
+                                  and userAnswers.get(idx.index) != null
+                                  and question.answerIndex == userAnswers.get(idx.index)}" class="incorrect">
+						不正解
+					</span>
+
+				</div>
+
+				<div class="comprehensive-result-button">
+					<a th:href="@{/quiz/{c}/comprehensive/review/{i}
+                             (c=${category}, i=${idx.index})}" class="small-button">
+						問題を確認
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="button-area">
+
+			<a th:href="@{/quiz/{c}/list(c=${category})}" class="small-button">
+				問題選択に戻る
+			</a>
+
+		</div>
+	</div>
+
+</body>
+
+</html>
