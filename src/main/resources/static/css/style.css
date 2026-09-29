@@ -767,3 +767,61 @@ width: 50px;
 text-align: right;
 white-space: nowrap;
 }
+
+.comprehensive-result-summary {
+    text-align: center;
+}
+
+.comprehensive-result-summary h2 {
+    margin-bottom: 15px;
+}
+
+.comprehensive-score {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.comprehensive-rate {
+    font-size: 24px;
+}
+
+.set-result {
+    margin-top: 20px;
+}
+
+.set-result h2 {
+    margin-bottom: 15px;
+}
+
+.set-result table {
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+.set-result th,
+.set-result td {
+    padding: 8px 20px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+.set-result th {
+    font-weight: bold;
+}
+
+.set-result .rate-high {
+    background-color: #dff0d8;
+}
+
+.set-result .rate-middle {
+    background-color: #fff3cd;
+}
+
+.set-result .rate-low {
+    background-color: #f8d7da;
+}

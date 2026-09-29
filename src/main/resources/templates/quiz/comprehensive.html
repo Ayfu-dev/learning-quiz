@@ -17,9 +17,9 @@
 		<p class="sub-title">
 			出題範囲を選択してください
 		</p>
-		
+
 		<p th:if="${error}" class="error-message" th:text="${error}"> </p>
-		
+
 		<form th:action="@{/quiz/{c}/comprehensive(c=${category})}" method="post">
 			<!-- 簡易選択 -->
 			<div class="comprehensive-simple">
@@ -93,7 +93,7 @@
 			</p>
 
 			<br>
-			
+
 			<button type="submit" id="startButton" class="button">
 				総合テスト開始
 			</button>
@@ -124,19 +124,19 @@
 
 			// 選択中の問題数を計算
 			function updateQuestionCount() {
-			    let total = 0;
-			    // 同じQuizSetを簡易版・詳細版の両方から
-			    // 2回カウントしないためのSet
-			    const countedQuizSets = new Set();
+				let total = 0;
+				// 同じQuizSetを簡易版・詳細版の両方から
+				// 2回カウントしないためのSet
+				const countedQuizSets = new Set();
 
-			    getQuizSetCheckboxes().forEach(function(checkbox) {
-			        if (checkbox.checked && !countedQuizSets.has(checkbox.value)) {
-			            total += Number(checkbox.dataset.questionCount);
-			            countedQuizSets.add(checkbox.value);
-			        }
-			    });
-			    document.getElementById("selectedQuestionCount").textContent = total;
-			    validateQuestionCount(total);
+				getQuizSetCheckboxes().forEach(function (checkbox) {
+					if (checkbox.checked && !countedQuizSets.has(checkbox.value)) {
+						total += Number(checkbox.dataset.questionCount);
+						countedQuizSets.add(checkbox.value);
+					}
+				});
+				document.getElementById("selectedQuestionCount").textContent = total;
+				validateQuestionCount(total);
 			}
 
 			// 出題数をチェック
@@ -184,12 +184,55 @@
 				}
 			}
 
+			function updateQuestionCount() {
+
+				let total = 0;
+
+				const countedQuizSets = new Set();
+
+				getQuizSetCheckboxes().forEach(function (checkbox) {
+
+					if (checkbox.checked && !countedQuizSets.has(checkbox.value)) {
+
+						total += Number(checkbox.dataset.questionCount);
+
+						countedQuizSets.add(checkbox.value);
+					}
+
+				});
+
+				document.getElementById("selectedQuestionCount").textContent = total;
+
+				validateQuestionCount(total);
+			}
+
 			// チェック状態が変更されたら、
 			// 簡易版・詳細版を同期して問題数を再計算
 			getQuizSetCheckboxes().forEach(function (checkbox) {
 				checkbox.addEventListener('change', function () {
 					syncQuizSet(this.value, this.checked);
 					updateQuestionCount();
+				});
+			});
+
+			getQuizSetCheckboxes().forEach(function (checkbox) {
+				checkbox.addEventListener("change", function () {
+					updateQuestionCount();
+
+					const total =
+						Number(
+							document.getElementById("selectedQuestionCount")
+								.textContent
+						);
+
+					const questionCountInput =
+						document.getElementById("questionCount");
+
+					// 選択範囲が20問以下なら、
+					// 選択範囲の問題数を初期値として設定
+					if (total > 0 && total <= 20) {
+						questionCountInput.value = total;
+					}
 				});
 			});
 

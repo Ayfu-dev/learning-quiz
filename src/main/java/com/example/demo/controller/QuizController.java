@@ -1,9 +1,9 @@
 package com.example.demo.controller;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -270,7 +270,7 @@ public class QuizController {
 	        }
 	    }
 
-	    Map<Integer, int[]> setResults = new LinkedHashMap<>();
+	    Map<Integer, int[]> setResults = new TreeMap<>();
 
 	    for (int i = 0; i < questions.size(); i++) {
 
@@ -294,6 +294,7 @@ public class QuizController {
 	            setResults.get(setIndex)[0]++;
 	        }
 	    }
+	    
 	    model.addAttribute("score", score);
 	    model.addAttribute("total", questions.size());
 	    model.addAttribute("questions", questions);

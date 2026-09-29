@@ -16,17 +16,51 @@
 		<!-- 得点 -->
 		<div class="question-card comprehensive-result-summary">
 
-			<h2>
+			<h2>総合正答率</h2>
+
+			<div class="comprehensive-score">
+
 				<span th:text="${score}"></span>
 				/
 				<span th:text="${total}"></span>
 				問
-			</h2>
 
-			<p>
-				正答率：
-				<span th:text="${score * 100 / total}"></span>%
-			</p>
+				<span class="comprehensive-rate">
+					<span th:text="${score * 100 / total}"></span>%
+				</span>
+
+			</div>
+
+			<div class="set-result">
+
+				<h2>クイズセット別正答率</h2>
+
+				<table>
+					<thead>
+						<tr>
+							<th>クイズセット</th>
+							<th>正答数</th>
+							<th>出題数</th>
+							<th>正答率</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						<tr th:each="entry : ${setResults}">
+							<td th:text="${entry.key + 1} + 'セット目'"></td>
+							<td th:text="${entry.value[0]}"></td>
+							<td th:text="${entry.value[1]}"></td>
+							<td th:with="rate=${entry.value[0] * 100.0 / entry.value[1]}"
+							    th:classappend="${rate >= 80 ? 'rate-high' :
+							                     rate >= 60 ? 'rate-middle' :
+							                     'rate-low'}"
+							    th:text="${#numbers.formatDecimal(rate, 0, 0) + '%'}">
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+			</div>
 
 		</div>
 
@@ -57,7 +91,7 @@
 			</a>
 
 		</div>
-		
+
 		<!-- 各問題の正誤一覧 -->
 		<h2>問題別結果</h2>
 

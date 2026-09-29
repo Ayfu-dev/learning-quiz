@@ -9,28 +9,32 @@
 </head>
 
 <body>
+	
+	<button class="button" onclick="location.href='/quiz'">
+		カテゴリへ戻る
+	</button>
+
 	<div class="container">
 		<h1 th:text="${category.toUpperCase()}"></h1>
 		<p class="sub-title">
 			学習する問題セットを選択してください
 		</p>
-		
+
+
 		<div class="button-area">
-		    <button class="button"
-		            th:attr="data-url=@{'/quiz/' + ${category} + '/comprehensive'}"
-		            onclick="location.href=this.dataset.url">
-		        総合テスト
-		    </button>
+			<button class="button" th:attr="data-url=@{'/quiz/' + ${category} + '/comprehensive'}"
+				onclick="location.href=this.dataset.url">
+				総合テスト
+			</button>
 		</div>
-		
+
 		<div class="question-card quiz-set-card" th:each="set, idx : ${quizSets}">
 			<h2 th:text="${set.title}"></h2>
 			<p>
 				問題数： <span th:text="${set.questions.size()}"></span> 問
 			</p>
 			<div class="button-area">
-				<button class="button"
-					th:attr="data-url=@{'/quiz/' + ${category} + '/' + ${idx.index} + '/0'}"
+				<button class="button" th:attr="data-url=@{'/quiz/' + ${category} + '/' + ${idx.index} + '/0'}"
 					onclick="location.href=this.dataset.url">
 					開始
 				</button>
