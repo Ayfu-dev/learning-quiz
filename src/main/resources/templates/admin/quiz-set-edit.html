@@ -13,7 +13,7 @@
 
 		<h1>クイズセット編集</h1>
 
-		<form th:action="@{/quiz/admin/quiz_set/edit}" method="post">
+		<form th:action="@{/quiz/admin/quiz_set/edit}" method="post"  class="question-form">
 
 			<input type="hidden" name="id" th:value="${quizSet.id}">
 
